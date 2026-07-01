@@ -6,7 +6,7 @@ import sqlite3
 import os
 import re
 
-from database import init_db, get_db_connection
+from database import init_db, get_db_connection, create_contact_message, get_contact_messages, delete_contact_message
 
 app = FastAPI(title="Matteo Berga Portfolio API")
 
@@ -52,6 +52,12 @@ class WorkCreate(WorkBase):
 
 class WorkUpdate(WorkBase):
     pass
+
+class ContactFormInput(BaseModel):
+    name: str = Field(..., min_length=1)
+    email: str = Field(..., min_length=3)
+    subject: str = Field(..., min_length=1)
+    message: str = Field(..., min_length=1)
 
 class PassphraseVerify(BaseModel):
     passphrase: str
@@ -329,3 +335,57 @@ def delete_tag(tag_id: str, authorized: bool = Depends(check_admin_passphrase)):
         
     conn.close()
     return {"status": "deleted", "id": tag_id}
+
+@app.post("/api/contact")
+def submit_contact(input_data: ContactFormInput):
+    import urllib.request
+    import json
+    try:
+        create_contact_message(
+            input_data.name,
+            input_data.email,
+            input_data.subject,
+            input_data.message
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to save message to database: {str(e)}")
+
+    # Check for forwarding webhook URL
+    forward_url = os.getenv("CONTACT_FORWARD_URL")
+    if forward_url:
+        try:
+            payload = {
+                "name": input_data.name,
+                "email": input_data.email,
+                "subject": input_data.subject,
+                "message": input_data.message,
+                "_replyto": input_data.email
+            }
+            req = urllib.request.Request(
+                forward_url,
+                data=json.dumps(payload).encode("utf-8"),
+                headers={"Content-Type": "application/json", "User-Agent": "FastAPI-Backend"}
+            )
+            with urllib.request.urlopen(req, timeout=5) as response:
+                pass
+        except Exception as e:
+            # We fail silently to the user so the form still succeeds, but log the warning
+            print(f"Failed to forward contact message: {e}")
+
+    return {"status": "success", "message": "Message transmitted successfully."}
+
+@app.get("/api/admin/messages")
+def list_messages(authorized: bool = Depends(check_admin_passphrase)):
+    try:
+        messages = get_contact_messages()
+        return messages
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+@app.delete("/api/admin/messages/{message_id}")
+def delete_msg(message_id: int, authorized: bool = Depends(check_admin_passphrase)):
+    try:
+        delete_contact_message(message_id)
+        return {"status": "deleted", "id": message_id}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")

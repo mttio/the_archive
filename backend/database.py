@@ -158,10 +158,10 @@ def init_db():
     cursor.execute("PRAGMA foreign_keys = ON")
     
     # Reset database by dropping old tables if present
-    # We drop work_tags first since it has foreign keys referencing works and tags
     cursor.execute("DROP TABLE IF EXISTS work_tags")
     cursor.execute("DROP TABLE IF EXISTS tags")
     cursor.execute("DROP TABLE IF EXISTS works")
+    cursor.execute("DROP TABLE IF EXISTS contact_messages")
     conn.commit()
     
     # Create tables
@@ -192,6 +192,17 @@ def init_db():
         PRIMARY KEY (work_id, tag_id),
         FOREIGN KEY (work_id) REFERENCES works(id) ON DELETE CASCADE,
         FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
+    )
+    """)
+
+    cursor.execute("""
+    CREATE TABLE contact_messages (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        subject TEXT NOT NULL,
+        message TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
     """)
     conn.commit()
@@ -233,6 +244,33 @@ def init_db():
     conn.commit()
     conn.close()
     print("Database seeded successfully.")
+
+def create_contact_message(name: str, email: str, subject: str, message: str) -> int:
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+    INSERT INTO contact_messages (name, email, subject, message)
+    VALUES (?, ?, ?, ?)
+    """, (name, email, subject, message))
+    msg_id = cursor.lastrowid
+    conn.commit()
+    conn.close()
+    return msg_id
+
+def get_contact_messages():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, name, email, subject, message, created_at FROM contact_messages ORDER BY created_at DESC")
+    rows = cursor.fetchall()
+    conn.close()
+    return [dict(row) for row in rows]
+
+def delete_contact_message(message_id: int):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM contact_messages WHERE id = ?", (message_id,))
+    conn.commit()
+    conn.close()
 
 if __name__ == "__main__":
     init_db()

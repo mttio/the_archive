@@ -13,6 +13,18 @@ export interface ApiWorkInput {
   tag_ids: string[];
 }
 
+export interface ContactFormInput {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}
+
+export interface ContactMessageItem extends ContactFormInput {
+  id: number;
+  created_at: string;
+}
+
 // Helper to extract authentication header
 const getAuthHeaders = (passphrase?: string): Record<string, string> => {
   const token = passphrase || sessionStorage.getItem('admin_passphrase') || '';
@@ -142,6 +154,43 @@ export const api = {
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(errorData.detail || 'Failed to delete tag.');
+    }
+  },
+
+  // Submit contact form
+  async submitContactForm(data: ContactFormInput): Promise<void> {
+    const response = await fetch(`${API_BASE_URL}/contact`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || 'Failed to submit contact message.');
+    }
+  },
+
+  // Fetch all contact messages (Admin)
+  async fetchContactMessages(): Promise<ContactMessageItem[]> {
+    const response = await fetch(`${API_BASE_URL}/admin/messages`, {
+      headers: getAuthHeaders(),
+    });
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || 'Failed to fetch contact messages.');
+    }
+    return response.json();
+  },
+
+  // Delete a contact message (Admin)
+  async deleteContactMessage(id: number): Promise<void> {
+    const response = await fetch(`${API_BASE_URL}/admin/messages/${id}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders(),
+    });
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || 'Failed to delete contact message.');
     }
   }
 };

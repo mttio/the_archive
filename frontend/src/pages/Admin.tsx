@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { LogIn, Plus, Edit2, Trash2, RefreshCw, Check } from 'lucide-react';
 import { api } from '../services/api';
+import type { ContactMessageItem } from '../services/api';
 import { useWorks } from '../hooks/useWorks';
 import type { WorkItem, TagItem } from '../data/works';
 
@@ -22,12 +23,17 @@ export const Admin: React.FC = () => {
   const [tagFormError, setTagFormError] = useState('');
   const [tagFormSuccess, setTagFormSuccess] = useState('');
 
+  // Contact messages state
+  const [messagesList, setMessagesList] = useState<ContactMessageItem[]>([]);
+  const [messagesLoading, setMessagesLoading] = useState(false);
+
   // Verify authentication on mount
   useEffect(() => {
     const savedToken = sessionStorage.getItem('admin_passphrase');
     if (savedToken) {
       setIsAuthenticated(true);
       loadTags();
+      loadMessages();
     }
   }, []);
 
@@ -39,6 +45,7 @@ export const Admin: React.FC = () => {
       if (authorized) {
         setIsAuthenticated(true);
         loadTags();
+        loadMessages();
       } else {
         setLoginError('Invalid secret passphrase.');
       }
@@ -63,6 +70,31 @@ export const Admin: React.FC = () => {
       console.error('Could not load tags list from server.', err);
     } finally {
       setTagsLoading(false);
+    }
+  };
+
+  // Load contact inbox messages
+  const loadMessages = async () => {
+    setMessagesLoading(true);
+    try {
+      const data = await api.fetchContactMessages();
+      setMessagesList(data);
+    } catch (err: any) {
+      console.error('Could not load messages from server.', err);
+    } finally {
+      setMessagesLoading(false);
+    }
+  };
+
+  const handleDeleteMessage = async (id: number) => {
+    if (!window.confirm('Are you sure you want to delete this contact message permanently?')) {
+      return;
+    }
+    try {
+      await api.deleteContactMessage(id);
+      setMessagesList(prev => prev.filter(msg => msg.id !== id));
+    } catch (err: any) {
+      alert(err.message || 'Failed to delete message.');
     }
   };
 
@@ -474,6 +506,68 @@ export const Admin: React.FC = () => {
             )}
           </div>
         </div>
+      </div>
+
+      {/* Contact Inbox Section */}
+      <div className="border border-neutral-200 bg-white rounded-none p-6 sm:p-8 space-y-6">
+        <h3 className="font-serif text-xl font-normal text-neutral-900 border-b border-neutral-200/60 pb-3 mb-6">
+          Contact Inbox
+        </h3>
+        
+        {messagesLoading ? (
+          <div className="text-center py-8 text-neutral-500 font-sans text-sm">Loading messages...</div>
+        ) : messagesList.length > 0 ? (
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse text-left text-sm font-sans">
+              <thead>
+                <tr className="border-b border-neutral-200 text-[10px] font-bold uppercase tracking-wider text-neutral-400">
+                  <th className="pb-3 pr-4 font-bold">Date</th>
+                  <th className="pb-3 px-4 font-bold">Sender</th>
+                  <th className="pb-3 px-4 font-bold">Topic</th>
+                  <th className="pb-3 px-4 font-bold w-1/2">Message</th>
+                  <th className="pb-3 pl-4 font-bold text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-neutral-100">
+                {messagesList.map((msg) => (
+                  <tr key={msg.id} className="hover:bg-neutral-50/50 transition-colors">
+                    <td className="py-4 pr-4 text-xs text-neutral-500 whitespace-nowrap align-top">
+                      {new Date(msg.created_at + 'Z').toLocaleString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </td>
+                    <td className="py-4 px-4 align-top">
+                      <div className="font-semibold text-neutral-800">{msg.name}</div>
+                      <a href={`mailto:${msg.email}`} className="text-xs text-neutral-400 hover:underline">{msg.email}</a>
+                    </td>
+                    <td className="py-4 px-4 align-top">
+                      <span className="inline-block text-[10px] font-semibold uppercase tracking-wider rounded-full px-2 py-0.5 border border-neutral-200 bg-neutral-50 text-neutral-500">
+                        {msg.subject}
+                      </span>
+                    </td>
+                    <td className="py-4 px-4 text-neutral-600 leading-relaxed break-words align-top text-xs whitespace-pre-wrap">
+                      {msg.message}
+                    </td>
+                    <td className="py-4 pl-4 text-right align-top">
+                      <button
+                        onClick={() => handleDeleteMessage(msg.id)}
+                        className="text-neutral-400 hover:text-rose-600 p-1.5 border border-transparent hover:border-rose-100 hover:bg-rose-50/50 transition-colors cursor-pointer"
+                        title="Delete message"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="text-center py-8 text-neutral-400 text-sm italic font-sans">No messages received yet.</div>
+        )}
       </div>
     </div>
   );

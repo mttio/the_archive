@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { api } from '../services/api';
 import { Mail, Camera, Activity, Send, CheckCircle } from 'lucide-react';
 
 const Github: React.FC<{ size?: number }> = ({ size = 18 }) => (
@@ -45,13 +46,22 @@ export const Contact: React.FC = () => {
     message: '',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate API submission
-    setTimeout(() => {
+    setSubmitting(true);
+    setSubmitError('');
+    try {
+      await api.submitContactForm(formData);
       setFormSubmitted(true);
       setFormData({ name: '', email: '', subject: 'General Inquiry', message: '' });
-    }, 800);
+    } catch (err: any) {
+      setSubmitError(err.message || 'Failed to transmit message. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -63,11 +73,11 @@ export const Contact: React.FC = () => {
     <div className="py-12 md:py-20 space-y-16 max-w-4xl mx-auto text-left">
       <section className="space-y-6 max-w-2xl">
         <h1 className="font-serif text-4xl sm:text-5xl font-bold tracking-tight text-neutral-900 leading-tight">
-          Let's create <br />
-          <span className="italic font-normal text-neutral-500">something together.</span>
+          Trust me, I think we should <br />
+          <span className="italic font-normal text-neutral-500">have a good Cappuccino</span>
         </h1>
         <p className="text-base sm:text-lg text-neutral-600 leading-relaxed font-sans">
-          Whether you want to discuss a software project, commission an artwork, talk running metrics, or just say hello—I'd love to hear from you.
+          Whether you want to discuss a project, commission an artwork, talk about sports, or just meet me, don't hesitate.
         </p>
       </section>
 
@@ -78,7 +88,7 @@ export const Contact: React.FC = () => {
             <h3 className="font-serif text-xl font-bold text-neutral-900">Direct Connect</h3>
             <div className="flex items-center space-x-3 text-neutral-600 hover:text-neutral-950 transition-colors duration-200">
               <Mail size={16} />
-              <a href="mailto:matteo@example.com" className="text-sm font-medium">matteo@example.com</a>
+              <a href="mailto:mtt.berga@gmail.com" className="text-sm font-medium">mtt.berga@gmail.com</a>
             </div>
           </div>
 
@@ -86,43 +96,43 @@ export const Contact: React.FC = () => {
             <h3 className="font-serif text-xl font-bold text-neutral-900">Elsewhere</h3>
             <div className="space-y-3">
               <a
-                href="https://github.com"
+                href="https://github.com/mttio"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center space-x-3 text-neutral-500 hover:text-neutral-950 transition-colors text-sm group"
               >
                 <Github size={16} />
-                <span>GitHub &bull; Codebases</span>
+                <span>GitHub &bull; Not much here</span>
               </a>
               
               <a
-                href="https://linkedin.com"
+                href="https://www.linkedin.com/in/matteo-berga-7332a52a6/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center space-x-3 text-neutral-500 hover:text-neutral-950 transition-colors text-sm group"
               >
                 <Linkedin size={16} />
-                <span>LinkedIn &bull; Professional network</span>
+                <span>LinkedIn &bull; Mmmh whatever</span>
               </a>
               
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/mtt_brg/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center space-x-3 text-neutral-500 hover:text-neutral-950 transition-colors text-sm group"
               >
                 <Camera size={16} />
-                <span>Instagram &bull; Portfolio drawings</span>
+                <span>Instagram &bull; Videos and drawings</span>
               </a>
               
               <a
-                href="https://strava.com"
+                href="https://www.strava.com/athletes/118901811"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center space-x-3 text-neutral-500 hover:text-neutral-950 transition-colors text-sm group"
               >
                 <Activity size={16} />
-                <span>Strava &bull; Running & Cycling logs</span>
+                <span>Strava &bull; Just fun stuff :)</span>
               </a>
             </div>
           </div>
@@ -186,10 +196,9 @@ export const Contact: React.FC = () => {
                   onChange={handleInputChange}
                   className="w-full rounded-none border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-800 focus:border-neutral-400 focus:outline-none focus:ring-0 transition-colors"
                 >
-                  <option value="General Inquiry">General Inquiry / Saying Hello</option>
-                  <option value="Software Collaboration">Software Collaboration / Code</option>
-                  <option value="Art Commission">Art Commission / Sketches</option>
-                  <option value="Athletics & Training">Athletics & Running metrics</option>
+                  <option value="General Inquiry">Saying Hello</option>
+                  <option value="Software Collaboration">Collaboration proposal</option>
+                  <option value="Art Commission">Work commission</option>
                 </select>
               </div>
 
@@ -207,11 +216,18 @@ export const Contact: React.FC = () => {
                 />
               </div>
 
+              {submitError && (
+                <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs font-sans">
+                  {submitError}
+                </div>
+              )}
+
               <button
                 type="submit"
-                className="group inline-flex items-center space-x-2 rounded-none bg-neutral-900 px-6 py-3 text-sm font-semibold text-white hover:bg-neutral-800 transition-colors cursor-pointer w-full sm:w-auto justify-center"
+                disabled={submitting}
+                className="group inline-flex items-center space-x-2 rounded-none bg-neutral-900 px-6 py-3 text-sm font-semibold text-white hover:bg-neutral-800 disabled:bg-neutral-400 disabled:cursor-not-allowed transition-colors cursor-pointer w-full sm:w-auto justify-center"
               >
-                <span>Send Message</span>
+                <span>{submitting ? 'Transmitting...' : 'Send Message'}</span>
                 <Send size={14} className="text-white transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </button>
             </form>
