@@ -320,9 +320,6 @@ export const WorkDetail: React.FC = () => {
     return renderLegacyContent(text);
   };
 
-  const getTagColorClasses = (_color: string) => {
-    return 'text-neutral-500 bg-neutral-50 border-neutral-200';
-  };
 
   const formatDateForDisplay = (dateStr: string): string => {
     if (!dateStr) return '';

@@ -190,9 +190,6 @@ export const FullPageEditor: React.FC = () => {
     }
   };
 
-  const getTagColorClasses = (_color: string) => {
-    return 'text-neutral-500 bg-neutral-50 border-neutral-200';
-  };
 
   if (loading) {
     return (

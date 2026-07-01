@@ -61,15 +61,15 @@ export const Home: React.FC = () => {
   return (
     <div className="space-y-12 py-12 md:py-20">
       {/* Hero Section */}
-      <section className="space-y-6 text-left max-w-3xl">
-        <h1 className="font-serif text-5xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-neutral-900 leading-[1.1]">
-          My digital, <br />
-          <span className="italic font-normal text-neutral-500">independent,</span> <br />
-          creative hub.
+      <section className="space-y-6 text-center ">
+        <h1 className=" font-serif text-7xl sm:text-8xl lg:text-8xl font-bold tracking-tight text-neutral-900 leading-[1.1] mb-0">
+          The Archive
         </h1>
-        
-        <p className="text-base sm:text-lg text-neutral-600 font-sans leading-relaxed">
-          I am <strong className="text-neutral-900 font-medium">Matteo Berga</strong>, a computer engineer, traditional/digital artist, and athlete. This space acts as an independent, living archive of my ongoing works.
+        <h2 className="font-serif text-3xl sm:text-4xl lg:text-4xl font-bold tracking-tight leading-[1.1] italic text-neutral-400 mb-9">
+          by Matteo Berga
+        </h2>
+        <p className=" text-md sm:text-lg lg:text-lg text-neutral-600 font-sans leading-relaxed">
+          My personal, off-grid, creative hub. <br/>An independent, living archive of the things I love.
         </p>
       </section>
 
