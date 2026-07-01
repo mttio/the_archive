@@ -12,6 +12,32 @@ import type { ApiWorkInput } from '../services/api';
 import type { TagItem } from '../data/works';
 import { BlockEditor } from '../components/BlockEditor';
 
+const MONTHS: Record<string, number> = {
+  january: 0, february: 1, march: 2, april: 3, may: 4, june: 5,
+  july: 6, august: 7, september: 8, october: 9, november: 10, december: 11
+};
+
+const parseDateString = (dateStr: string): number => {
+  if (!dateStr) return 0;
+  const parts = dateStr.trim().toLowerCase().split(/\s+/);
+  if (parts.length === 2) {
+    const [monthStr, yearStr] = parts;
+    const month = MONTHS[monthStr] ?? 0;
+    const year = parseInt(yearStr, 10) || 0;
+    return new Date(year, month, 1).getTime();
+  }
+  const parsed = Date.parse(dateStr);
+  return isNaN(parsed) ? 0 : parsed;
+};
+
+const getDatePickerValue = (dateStr: string): string => {
+  if (!dateStr) return new Date().toISOString().split('T')[0];
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return dateStr;
+  const parsed = parseDateString(dateStr);
+  if (parsed === 0) return new Date().toISOString().split('T')[0];
+  return new Date(parsed).toISOString().split('T')[0];
+};
+
 export const FullPageEditor: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // undefined or "new" or existing id
   const navigate = useNavigate();
@@ -33,7 +59,7 @@ export const FullPageEditor: React.FC = () => {
     title: '',
     subtitle: '',
     content: JSON.stringify([{ type: 'text', id: 'init-text', value: '' }]),
-    date: '',
+    date: new Date().toISOString().split('T')[0],
     imageUrl: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1200',
     draft: true,
     tag_ids: [],
@@ -286,11 +312,10 @@ export const FullPageEditor: React.FC = () => {
             <div className="flex items-center space-x-2">
               <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Timeline:</span>
               <input
-                type="text"
-                value={formData.date}
+                type="date"
+                value={getDatePickerValue(formData.date)}
                 onChange={(e) => setFormData(prev => ({ ...prev, date: e.target.value }))}
-                placeholder="e.g. May 2026"
-                className="text-sm text-neutral-700 bg-transparent border-0 border-b border-transparent focus:border-neutral-200 focus:outline-none py-0.5 max-w-[150px]"
+                className="text-sm text-neutral-700 bg-transparent border-0 border-b border-transparent focus:border-neutral-200 focus:outline-none py-0.5"
               />
             </div>
 

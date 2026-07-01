@@ -125,6 +125,21 @@ export const Admin: React.FC = () => {
     return 'text-neutral-500 bg-neutral-50 border-neutral-200';
   };
 
+  const formatDateForDisplay = (dateStr: string): string => {
+    if (!dateStr) return '';
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+      const [year, month, day] = dateStr.split('-');
+      const date = new Date(Date.UTC(parseInt(year), parseInt(month) - 1, parseInt(day)));
+      return date.toLocaleDateString('en-US', { 
+        month: 'long', 
+        day: 'numeric', 
+        year: 'numeric',
+        timeZone: 'UTC'
+      });
+    }
+    return dateStr;
+  };
+
   const publishedWorks = works.filter((item) => !item.draft);
   const draftWorks = works.filter((item) => item.draft);
 
@@ -146,7 +161,13 @@ export const Admin: React.FC = () => {
               <div className="flex items-start justify-between gap-3">
                 <div className="space-y-0.5">
                   <h4 className="font-serif text-base font-normal text-neutral-900 leading-tight">
-                    {item.title}
+                    {item.draft ? (
+                      item.title
+                    ) : (
+                      <Link to={`/work/${item.id}`} className="hover:underline hover:text-neutral-700 decoration-none">
+                        {item.title}
+                      </Link>
+                    )}
                   </h4>
                   <span className="block text-[9px] text-neutral-400 font-mono">slug: {item.id}</span>
                 </div>
@@ -172,7 +193,7 @@ export const Admin: React.FC = () => {
               </div>
 
               <div className="flex items-center justify-between gap-4 pt-1 text-xs">
-                <span className="text-neutral-400 font-sans text-[11px]">{item.date || '—'}</span>
+                <span className="text-neutral-400 font-sans text-[11px]">{formatDateForDisplay(item.date) || '—'}</span>
                 <div className="flex items-center space-x-2">
                   <Link
                     to={`/admin/edit/${item.id}`}
@@ -212,7 +233,13 @@ export const Admin: React.FC = () => {
                 <tr key={item.id} className="hover:bg-neutral-50/50 transition-colors group">
                   <td className="py-3 px-4 font-medium text-neutral-900">
                     <div className="flex items-center space-x-2">
-                      <span>{item.title}</span>
+                      {item.draft ? (
+                        <span>{item.title}</span>
+                      ) : (
+                        <Link to={`/work/${item.id}`} className="hover:underline hover:text-neutral-700 decoration-none">
+                          {item.title}
+                        </Link>
+                      )}
                       {item.draft && (
                         <span className="inline-block text-[8px] font-semibold uppercase tracking-wider text-neutral-500 bg-stone-100 border border-neutral-200 px-1.5 py-0.2 rounded-full font-sans">
                           Draft
@@ -221,7 +248,7 @@ export const Admin: React.FC = () => {
                     </div>
                     <span className="block text-[10px] text-neutral-400 font-mono mt-0.5">slug: {item.id}</span>
                   </td>
-                  <td className="py-3 px-4 text-xs text-neutral-500">{item.date || '—'}</td>
+                  <td className="py-3 px-4 text-xs text-neutral-500">{formatDateForDisplay(item.date) || '—'}</td>
                   <td className="py-3 px-4">
                     <div className="flex flex-wrap gap-1">
                       {item.tags && item.tags.length > 0 ? (

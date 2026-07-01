@@ -324,6 +324,21 @@ export const WorkDetail: React.FC = () => {
     return 'text-neutral-500 bg-neutral-50 border-neutral-200';
   };
 
+  const formatDateForDisplay = (dateStr: string): string => {
+    if (!dateStr) return '';
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+      const [year, month, day] = dateStr.split('-');
+      const date = new Date(Date.UTC(parseInt(year), parseInt(month) - 1, parseInt(day)));
+      return date.toLocaleDateString('en-US', { 
+        month: 'long', 
+        day: 'numeric', 
+        year: 'numeric',
+        timeZone: 'UTC'
+      });
+    }
+    return dateStr;
+  };
+
   return (
     <article className="py-12 md:py-20 space-y-12 max-w-4xl mx-auto">
       {/* Header back button */}
@@ -344,7 +359,7 @@ export const WorkDetail: React.FC = () => {
         <div className="flex flex-wrap items-center gap-4 text-xs text-neutral-500">
           <span className="flex items-center space-x-1">
             <Calendar size={12} />
-            <span>{item.date}</span>
+            <span>{formatDateForDisplay(item.date)}</span>
           </span>
           
           {/* Tags */}

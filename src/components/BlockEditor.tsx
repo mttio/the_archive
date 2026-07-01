@@ -9,6 +9,8 @@ import {
   Type, 
   List, 
   ListOrdered, 
+  ChevronUp,
+  ChevronDown,
   X,
   FileImage
 } from 'lucide-react';
@@ -53,7 +55,6 @@ const AutoResizeTextarea: React.FC<{
 
 export const BlockEditor: React.FC<BlockEditorProps> = ({ value, onChange }) => {
   const [blocks, setBlocks] = useState<BlockItem[]>([]);
-  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
   // Parse initial value
   useEffect(() => {
@@ -146,32 +147,17 @@ export const BlockEditor: React.FC<BlockEditorProps> = ({ value, onChange }) => 
   // Unique ID generator
   const generateId = () => Math.random().toString(36).substr(2, 9);
 
-  // Reordering via HTML5 Drag and Drop
-  const handleDragStart = (e: React.DragEvent, index: number) => {
-    setDraggedIndex(index);
-    e.dataTransfer.effectAllowed = 'move';
-  };
+  // Reordering
+  const moveBlock = (index: number, direction: 'up' | 'down') => {
+    if (direction === 'up' && index === 0) return;
+    if (direction === 'down' && index === blocks.length - 1) return;
 
-  const handleDragOver = (e: React.DragEvent, index: number) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-  };
-
-  const handleDrop = (e: React.DragEvent, index: number) => {
-    e.preventDefault();
-    if (draggedIndex === null || draggedIndex === index) return;
-
+    const nextIndex = direction === 'up' ? index - 1 : index + 1;
     const newBlocks = [...blocks];
-    const draggedBlock = newBlocks[draggedIndex];
-    newBlocks.splice(draggedIndex, 1);
-    newBlocks.splice(index, 0, draggedBlock);
-
+    const temp = newBlocks[index];
+    newBlocks[index] = newBlocks[nextIndex];
+    newBlocks[nextIndex] = temp;
     updateBlocks(newBlocks);
-    setDraggedIndex(null);
-  };
-
-  const handleDragEnd = () => {
-    setDraggedIndex(null);
   };
 
   // Deletion
@@ -335,23 +321,10 @@ export const BlockEditor: React.FC<BlockEditorProps> = ({ value, onChange }) => 
         {blocks.map((block, index) => (
           <div 
             key={block.id} 
-            className={`relative group/block flex items-start py-2 ${
-              draggedIndex === index ? 'opacity-40 bg-neutral-50' : ''
-            }`}
-            onDragOver={(e) => handleDragOver(e, index)}
-            onDrop={(e) => handleDrop(e, index)}
+            className="relative group/block flex items-start py-2"
           >
-            {/* Left Column: Drag Handle (the grey lateral bar) */}
-            <div
-              draggable
-              onDragStart={(e) => handleDragStart(e, index)}
-              onDragEnd={handleDragEnd}
-              className="w-1.5 self-stretch cursor-grab hover:bg-neutral-400 bg-transparent group-hover/block:bg-neutral-200/80 transition-colors mr-3 select-none"
-              title="Drag to reorder block"
-            />
-
-            {/* Hover Controls (Select type & Delete button) */}
-            <div className="flex items-center space-x-1.5 opacity-0 group-hover/block:opacity-100 transition-opacity duration-150 mr-3 select-none pt-1">
+            {/* Hover Controls (Select type, Reorder arrows, & Delete button) */}
+            <div className="flex items-center space-x-1 opacity-0 group-hover/block:opacity-100 transition-opacity duration-150 mr-3 select-none pt-1">
               <select
                 value={block.type === 'heading' ? `heading-${block.level}` : block.type === 'list' ? `list-${block.listType}` : block.type}
                 onChange={(e) => changeBlockType(index, e.target.value as any)}
@@ -369,6 +342,26 @@ export const BlockEditor: React.FC<BlockEditorProps> = ({ value, onChange }) => 
 
               <button
                 type="button"
+                onClick={() => moveBlock(index, 'up')}
+                disabled={index === 0}
+                className="p-1 hover:bg-neutral-100 text-neutral-500 disabled:text-neutral-200 disabled:hover:bg-transparent cursor-pointer rounded-none"
+                title="Move block up"
+              >
+                <ChevronUp size={13} />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => moveBlock(index, 'down')}
+                disabled={index === blocks.length - 1}
+                className="p-1 hover:bg-neutral-100 text-neutral-500 disabled:text-neutral-200 disabled:hover:bg-transparent cursor-pointer rounded-none"
+                title="Move block down"
+              >
+                <ChevronDown size={13} />
+              </button>
+
+              <button
+                type="button"
                 onClick={() => deleteBlock(index)}
                 className="p-1 hover:bg-rose-50 text-neutral-400 hover:text-rose-600 transition-colors cursor-pointer rounded-none"
                 title="Delete block"
@@ -378,7 +371,7 @@ export const BlockEditor: React.FC<BlockEditorProps> = ({ value, onChange }) => 
             </div>
 
             {/* Block Canvas Area */}
-            <div className="flex-grow min-w-0">
+            <div className="flex-grow min-w-0 border-l-2 border-transparent group-hover/block:border-neutral-200/50 pl-3 transition-colors">
               {/* Render Heading Block */}
               {block.type === 'heading' && (
                 <div className="flex items-center space-x-2">

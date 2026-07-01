@@ -6,6 +6,21 @@ interface WorkCardProps {
   item: WorkItem;
 }
 
+const formatDateForDisplay = (dateStr: string): string => {
+  if (!dateStr) return '';
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+    const [year, month, day] = dateStr.split('-');
+    const date = new Date(Date.UTC(parseInt(year), parseInt(month) - 1, parseInt(day)));
+    return date.toLocaleDateString('en-US', { 
+      month: 'long', 
+      day: 'numeric', 
+      year: 'numeric',
+      timeZone: 'UTC'
+    });
+  }
+  return dateStr;
+};
+
 export const WorkCard: React.FC<WorkCardProps> = ({ item }) => {
   const hasImage = !!item.imageUrl && item.imageUrl.trim() !== '';
 
@@ -16,7 +31,7 @@ export const WorkCard: React.FC<WorkCardProps> = ({ item }) => {
         {/* Left Column: Date */}
         <div className="md:col-span-2 text-left">
           <span className="font-serif text-lg font-bold text-neutral-900 tracking-tight block pt-1">
-            {item.date}
+            {formatDateForDisplay(item.date)}
           </span>
         </div>
 
