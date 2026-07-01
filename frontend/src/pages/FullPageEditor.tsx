@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { 
   ArrowLeft, 
@@ -50,7 +50,6 @@ export const FullPageEditor: React.FC = () => {
   
   // Available tags list
   const [availableTags, setAvailableTags] = useState<TagItem[]>([]);
-  const [showTagsPopover, setShowTagsPopover] = useState(false);
   const [showImagePopover, setShowImagePopover] = useState(false);
 
   // Form state
@@ -116,17 +115,6 @@ export const FullPageEditor: React.FC = () => {
     loadEditorData();
   }, [id, isCreateMode, navigate]);
 
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleOutsideClick = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setShowTagsPopover(false);
-      }
-    };
-    document.addEventListener('mousedown', handleOutsideClick);
-    return () => document.removeEventListener('mousedown', handleOutsideClick);
-  }, []);
 
   // Helper to slugify titles to IDs
   const slugify = (text: string) => {
@@ -211,13 +199,11 @@ export const FullPageEditor: React.FC = () => {
     );
   }
 
-  // Active tags mapping
-  const activeTagsList = availableTags.filter(tag => formData.tag_ids.includes(tag.id));
 
   return (
     <div className="min-h-screen pb-24 text-left">
       {/* Sticky Edit Control Header Bar */}
-      <header className="sticky top-0 z-40 w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] bg-white/90 backdrop-blur-md border-b border-neutral-200 mb-8">
+      <header className="sticky top-0 z-40 w-screen relative left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-md border-b border-neutral-200 mb-8 px-6 lg:px-8">
         <div className="mx-auto max-w-5xl px-6 lg:px-8 flex flex-col sm:flex-row sm:items-center sm:justify-between py-4 gap-4">
           <div className="flex items-center space-x-4">
             <Link
@@ -326,72 +312,35 @@ export const FullPageEditor: React.FC = () => {
               />
             </div>
 
-            <div className="flex items-center space-x-3">
+            <div className="flex flex-wrap items-center gap-3">
               <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Tags:</span>
-              <div className="flex flex-wrap gap-1.5">
-                {activeTagsList.map(tag => (
-                  <span
-                    key={tag.id}
-                    className="inline-flex items-center rounded-full border border-neutral-200 bg-neutral-50 px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-neutral-500"
-                  >
-                    {tag.name}
-                  </span>
-                ))}
-                {activeTagsList.length === 0 && (
-                  <span className="text-xs text-neutral-400 italic">No tags selected.</span>
-                )}
-              </div>
-
-              {/* Spacious Checkbox Dropdown */}
-              <div className="relative inline-block text-left" ref={dropdownRef}>
-                <button
-                  type="button"
-                  onClick={() => setShowTagsPopover(!showTagsPopover)}
-                  className="inline-flex items-center gap-x-1 border border-neutral-200 bg-white px-2.5 py-1 text-[10px] uppercase font-bold tracking-wider text-neutral-500 hover:text-neutral-900 hover:border-neutral-400 transition-colors cursor-pointer rounded-none"
-                >
-                  <span>Edit Tags</span>
-                  <svg className="h-3 w-3 text-neutral-400" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
-                  </svg>
-                </button>
-
-                {showTagsPopover && (
-                  <div className="absolute left-0 mt-2 z-50 w-52 border border-neutral-200 bg-white shadow-xl rounded-none text-left">
-                    <div className="py-1 divide-y divide-neutral-100">
-                      {availableTags.map(tag => {
-                        const isSelected = formData.tag_ids.includes(tag.id);
-                        return (
-                          <button
-                            type="button"
-                            key={tag.id}
-                            onClick={() => {
-                              setFormData(prev => {
-                                const ids = prev.tag_ids.includes(tag.id)
-                                  ? prev.tag_ids.filter(id => id !== tag.id)
-                                  : [...prev.tag_ids, tag.id];
-                                return { ...prev, tag_ids: ids };
-                              });
-                            }}
-                            className="flex items-center justify-between w-full px-3 py-2.5 text-left text-xs font-semibold text-neutral-700 hover:bg-neutral-50 transition-colors cursor-pointer"
-                          >
-                            <span className="uppercase tracking-wider text-[10px]">{tag.name}</span>
-                            <div className={`h-3.5 w-3.5 border flex items-center justify-center rounded-none transition-all ${
-                              isSelected ? 'bg-neutral-900 border-neutral-900 text-white' : 'border-neutral-300'
-                            }`}>
-                              {isSelected && (
-                                <svg className="h-2 w-2" viewBox="0 0 20 20" fill="currentColor">
-                                  <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
-                                </svg>
-                              )}
-                            </div>
-                          </button>
-                        );
-                      })}
-                      {availableTags.length === 0 && (
-                        <div className="px-3 py-2.5 text-xs text-neutral-400 italic">No tags found.</div>
-                      )}
-                    </div>
-                  </div>
+              <div className="flex flex-wrap gap-2">
+                {availableTags.map(tag => {
+                  const isSelected = formData.tag_ids.includes(tag.id);
+                  return (
+                    <button
+                      type="button"
+                      key={tag.id}
+                      onClick={() => {
+                        setFormData(prev => {
+                          const ids = prev.tag_ids.includes(tag.id)
+                            ? prev.tag_ids.filter(id => id !== tag.id)
+                            : [...prev.tag_ids, tag.id];
+                          return { ...prev, tag_ids: ids };
+                        });
+                      }}
+                      className={`rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider transition-all duration-200 border cursor-pointer ${
+                        isSelected
+                          ? 'bg-neutral-900 border-neutral-900 text-white font-bold'
+                          : 'text-neutral-400 border-neutral-200/80 bg-neutral-50 hover:bg-neutral-100 hover:text-neutral-700 font-semibold'
+                      }`}
+                    >
+                      {tag.name}
+                    </button>
+                  );
+                })}
+                {availableTags.length === 0 && (
+                  <span className="text-xs text-neutral-400 italic">No tags found. Create tags in Admin console.</span>
                 )}
               </div>
             </div>

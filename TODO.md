@@ -17,3 +17,26 @@
 - [x] in the bottom right corner replace the "Designed with intention • Artist, Engineer, Athlete" with just "Designed with intention by Matteo Berga"
 - [x] the icons in the topbar should lead to the same website pages I added in the contact page
 - [x] change the title of the site on the top left with "The Archive by Matteo Berga" in which "by Matteo Berga" should be colored with a slightly lighter grey
+- [x] the top bar in new/edit page is still completely messed up, looking all of to the right
+- [x] add youtube among my notable links, both in the navbar and the contact page (with the little icon). My yt channel is at https://www.youtube.com/@matteoberga
+- [x] while h2 and h3 elements in edit page are ok in serif font, I'd like normal TEXT from articles to always be displayed as sans serif (like it' already being displayed in the final version).
+- [x] tags selector in the home page should feature them looking like normal, being rounded and smaller rather than squared
+- [x] let's change again the tags selector in the edit page: it should display all available tags in one or more lines, allowing you to select the ones you like
+- [x] remove borders or shadows from all images (especially remove the border from images that feature a subtitle in articles)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

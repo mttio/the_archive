@@ -81,10 +81,10 @@ export const Home: React.FC = () => {
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setSelectedFilter('all')}
-              className={`rounded-none px-4 py-1.5 text-xs font-medium tracking-wide uppercase transition-all duration-200 cursor-pointer ${
+              className={`rounded-full px-3 py-1 text-[10px] font-bold tracking-wider uppercase transition-all duration-200 cursor-pointer border ${
                 selectedFilter === 'all'
-                  ? 'bg-neutral-900 text-white font-semibold'
-                  : 'text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100'
+                  ? 'bg-neutral-900 border-neutral-900 text-white'
+                  : 'text-neutral-500 border-neutral-200 hover:text-neutral-900 hover:bg-neutral-100'
               }`}
             >
               All
@@ -93,10 +93,10 @@ export const Home: React.FC = () => {
               <button
                 key={tag.id}
                 onClick={() => setSelectedFilter(tag.id)}
-                className={`rounded-none px-4 py-1.5 text-xs font-medium tracking-wide uppercase transition-all duration-200 cursor-pointer ${
+                className={`rounded-full px-3 py-1 text-[10px] font-bold tracking-wider uppercase transition-all duration-200 cursor-pointer border ${
                   selectedFilter === tag.id
-                    ? 'bg-neutral-900 text-white font-semibold'
-                    : 'text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100'
+                    ? 'bg-neutral-900 border-neutral-900 text-white'
+                    : 'text-neutral-500 border-neutral-200 hover:text-neutral-900 hover:bg-neutral-100'
                 }`}
               >
                 {tag.name}

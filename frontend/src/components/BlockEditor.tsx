@@ -394,7 +394,7 @@ export const BlockEditor: React.FC<BlockEditorProps> = ({ value, onChange }) => 
                 <AutoResizeTextarea
                   value={block.value}
                   onChange={(val) => updateBlockValue(index, val)}
-                  className="w-full bg-transparent border-0 border-b border-transparent focus:border-neutral-200 focus:outline-none text-neutral-800 placeholder-neutral-300 leading-relaxed font-serif text-base sm:text-lg"
+                  className="w-full bg-transparent border-0 border-b border-transparent focus:border-neutral-200 focus:outline-none text-neutral-800 placeholder-neutral-300 leading-relaxed font-sans text-base sm:text-lg"
                   placeholder="Type article content here... Support inline styling: **bold**, *italic*, `code`, [text](url)"
                 />
               )}

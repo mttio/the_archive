@@ -21,7 +21,7 @@ const WorkCarousel: React.FC<{ slides: { url: string; caption: string }[] }> = (
   };
 
   return (
-    <div className="relative w-full overflow-hidden border border-neutral-200 bg-neutral-900 group my-8">
+    <div className="relative w-full overflow-hidden bg-neutral-950 group my-8">
       {/* Slides Container */}
       <div className="relative aspect-video w-full flex items-center justify-center">
         {slides.map((slide, index) => (
@@ -209,7 +209,7 @@ export const WorkDetail: React.FC = () => {
             layoutClass = '-mx-6 lg:-mx-8 my-12 w-screen max-w-none relative left-1/2 right-1/2 -translate-x-1/2';
           }
           return (
-            <figure key={block.id} className={`${layoutClass} border border-neutral-200 bg-neutral-100/50 overflow-hidden`}>
+            <figure key={block.id} className={`${layoutClass} overflow-hidden`}>
               <img src={block.url} alt={block.caption || 'Article image'} className="w-full h-auto object-cover max-h-[600px]" />
               {block.caption && (
                 <figcaption className="text-center text-xs text-neutral-400 font-sans mt-3 px-4 italic">
@@ -383,7 +383,7 @@ export const WorkDetail: React.FC = () => {
 
       {/* Main Showcase Image */}
       {item.imageUrl && item.imageUrl.trim() !== '' && (
-        <div className="relative aspect-video w-full overflow-hidden rounded-none border border-neutral-200 bg-neutral-100 shadow-md">
+        <div className="relative aspect-video w-full overflow-hidden rounded-none bg-neutral-50">
           <img
             src={item.imageUrl}
             alt={item.title}
