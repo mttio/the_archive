@@ -203,7 +203,7 @@ export const FullPageEditor: React.FC = () => {
   return (
     <div className="min-h-screen pb-24 text-left">
       {/* Sticky Edit Control Header Bar */}
-      <header className="sticky top-0 z-40 w-screen relative left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-md border-b border-neutral-200 mb-8 px-6 lg:px-8">
+      <header className="sticky top-0 z-40 w-screen ml-[calc(-50vw+50%)] bg-white/90 backdrop-blur-md border-b border-neutral-200 mb-8">
         <div className="mx-auto max-w-5xl px-6 lg:px-8 flex flex-col sm:flex-row sm:items-center sm:justify-between py-4 gap-4">
           <div className="flex items-center space-x-4">
             <Link
