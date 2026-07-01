@@ -1,0 +1,456 @@
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { 
+  ArrowLeft, 
+  Save, 
+  Check,
+  X,
+  AlertCircle
+} from 'lucide-react';
+import { api } from '../services/api';
+import type { ApiWorkInput } from '../services/api';
+import type { TagItem } from '../data/works';
+import { BlockEditor } from '../components/BlockEditor';
+
+export const FullPageEditor: React.FC = () => {
+  const { id } = useParams<{ id: string }>(); // undefined or "new" or existing id
+  const navigate = useNavigate();
+  const isCreateMode = !id || id === 'new';
+
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [formError, setFormError] = useState('');
+  const [formSuccess, setFormSuccess] = useState('');
+  
+  // Available tags list
+  const [availableTags, setAvailableTags] = useState<TagItem[]>([]);
+  const [showTagsPopover, setShowTagsPopover] = useState(false);
+  const [showImagePopover, setShowImagePopover] = useState(false);
+
+  // Form state
+  const [formData, setFormData] = useState<ApiWorkInput>({
+    id: '',
+    title: '',
+    subtitle: '',
+    content: JSON.stringify([{ type: 'text', id: 'init-text', value: '' }]),
+    date: '',
+    imageUrl: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1200',
+    draft: true,
+    tag_ids: [],
+  });
+
+  // Verify auth on mount and load data
+  useEffect(() => {
+    const token = sessionStorage.getItem('admin_passphrase');
+    if (!token) {
+      navigate('/admin');
+      return;
+    }
+
+    async function loadEditorData() {
+      setLoading(true);
+      try {
+        // Load tags
+        const tags = await api.fetchTags();
+        setAvailableTags(tags);
+
+        if (!isCreateMode && id) {
+          // Edit mode: fetch existing post
+          const post = await api.fetchWorkById(id);
+          setFormData({
+            id: post.id,
+            title: post.title,
+            subtitle: post.subtitle || '',
+            content: post.content || '',
+            date: post.date || '',
+            imageUrl: post.imageUrl || '',
+            draft: !!post.draft,
+            tag_ids: post.tags ? post.tags.map(t => t.id) : [],
+          });
+        } else {
+          // Create mode
+          setFormData({
+            id: '',
+            title: 'Untitled Post',
+            subtitle: 'Write an elegant subtitle or summary hook here...',
+            content: JSON.stringify([{ type: 'text', id: 'init-text', value: '' }]),
+            date: new Date().toLocaleString('default', { month: 'long', year: 'numeric' }),
+            imageUrl: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1200',
+            draft: true,
+            tag_ids: [],
+          });
+        }
+      } catch (err: any) {
+        setFormError('Failed to load post data from API database.');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadEditorData();
+  }, [id, isCreateMode, navigate]);
+
+  // Helper to slugify titles to IDs
+  const slugify = (text: string) => {
+    return text
+      .toString()
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, '-') // Replace spaces with -
+      .replace(/[^\w\-]+/g, '') // Remove all non-word chars
+      .replace(/\-\-+/g, '-'); // Replace multiple - with single -
+  };
+
+  const handleTitleChange = (val: string) => {
+    setFormData((prev) => {
+      const updatedId = isCreateMode ? slugify(val) : prev.id;
+      return {
+        ...prev,
+        title: val,
+        id: updatedId,
+      };
+    });
+  };
+
+  const savePost = async (isDraft: boolean) => {
+    setFormError('');
+    setFormSuccess('');
+
+    if (!formData.title.trim()) {
+      setFormError('Title is required.');
+      return;
+    }
+
+    if (isCreateMode && (!formData.id || !formData.id.trim())) {
+      setFormError('Slug ID is required.');
+      return;
+    }
+
+    // Publish validations
+    if (!isDraft) {
+      if (!formData.subtitle.trim()) {
+        setFormError('Subtitle is required to publish.');
+        return;
+      }
+      if (formData.tag_ids.length === 0) {
+        setFormError('Select at least one tag to publish.');
+        return;
+      }
+    }
+
+    const payload = {
+      ...formData,
+      draft: isDraft,
+    };
+
+    setSaving(true);
+    try {
+      if (isCreateMode) {
+        await api.createWork(payload);
+        setFormSuccess('Article created successfully!');
+      } else {
+        await api.updateWork(formData.id!, payload);
+        setFormSuccess('Article updated successfully!');
+      }
+
+      // Redirect back to console dashboard after short delay
+      setTimeout(() => {
+        navigate('/admin');
+      }, 1000);
+    } catch (err: any) {
+      setFormError(err.message || 'Operation failed. Check database unique slug constraints.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const getTagColorClasses = (_color: string) => {
+    return 'text-neutral-500 bg-neutral-50 border-neutral-200';
+  };
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-32 text-center">
+        <p className="text-sm text-neutral-500 animate-pulse font-sans">Loading visual workspace editor...</p>
+      </div>
+    );
+  }
+
+  // Active tags mapping
+  const activeTagsList = availableTags.filter(tag => formData.tag_ids.includes(tag.id));
+
+  return (
+    <div className="min-h-screen pb-24 text-left">
+      {/* Sticky Edit Control Header Bar */}
+      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-neutral-200 py-4 mb-8 -mx-6 lg:-mx-8 px-6 lg:px-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex items-center space-x-3">
+          <Link
+            to="/admin"
+            className="p-2 border border-neutral-200 hover:border-neutral-400 text-neutral-500 hover:text-neutral-900 transition-colors flex items-center justify-center rounded-none"
+            title="Return to Dashboard"
+          >
+            <ArrowLeft size={16} />
+          </Link>
+          <div>
+            <h1 className="font-serif text-lg font-bold text-neutral-900 leading-none">
+              {isCreateMode ? 'Drafting New Post' : `Editing: ${formData.id}`}
+            </h1>
+            <span className="text-[10px] text-neutral-400 font-mono mt-0.5 block">
+              Status: {formData.draft ? 'DRAFT' : 'PUBLISHED'}
+            </span>
+          </div>
+        </div>
+
+        {/* Action Controls */}
+        <div className="flex items-center space-x-3">
+          {formError && (
+            <div className="flex items-center space-x-1 text-xs text-rose-600 bg-rose-50 border border-rose-100 px-3 py-2">
+              <AlertCircle size={14} />
+              <span>{formError}</span>
+            </div>
+          )}
+
+          {formSuccess && (
+            <div className="flex items-center space-x-1 text-xs text-emerald-600 bg-emerald-50 border border-emerald-100 px-3 py-2">
+              <Check size={14} />
+              <span>{formSuccess}</span>
+            </div>
+          )}
+
+          <button
+            type="button"
+            onClick={() => savePost(true)}
+            disabled={saving}
+            className="border border-neutral-300 bg-neutral-100 px-4 py-2 text-xs font-semibold text-neutral-700 hover:bg-neutral-200 transition-colors cursor-pointer rounded-none disabled:bg-neutral-50 disabled:text-neutral-400"
+          >
+            Save as Draft
+          </button>
+          
+          <button
+            type="button"
+            onClick={() => savePost(false)}
+            disabled={saving}
+            className="flex items-center justify-center space-x-1.5 bg-neutral-900 px-5 py-2 text-xs font-semibold text-white hover:bg-neutral-800 transition-colors cursor-pointer rounded-none disabled:bg-neutral-400"
+          >
+            <Save size={14} />
+            <span>{saving ? 'Saving...' : 'Publish'}</span>
+          </button>
+        </div>
+      </header>
+
+      {/* Editor Content Canvas Container */}
+      <article className="max-w-4xl mx-auto space-y-12">
+        {/* Slug ID editor (Create Mode only) */}
+        {isCreateMode && (
+          <div className="border border-neutral-200 bg-stone-50/50 p-4 space-y-2">
+            <label className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 block">Slug URL Identifier (Primary Key)*</label>
+            <input
+              type="text"
+              value={formData.id}
+              onChange={(e) => setFormData(prev => ({ ...prev, id: slugify(e.target.value) }))}
+              placeholder="e.g. custom-webassembly-compiler"
+              className="w-full text-xs font-mono border border-neutral-200 bg-white px-3 py-2 focus:border-neutral-400 focus:outline-none"
+            />
+            <span className="text-[9px] text-neutral-400 block font-mono">
+              Url preview: http://localhost:5174/work/{formData.id || 'slug-id'}
+            </span>
+          </div>
+        )}
+
+        {/* Metadata section (Title, Subtitle, Date) */}
+        <div className="space-y-4">
+          {/* Title Editor */}
+          <div className="relative group/title">
+            <input
+              type="text"
+              value={formData.title}
+              onChange={(e) => handleTitleChange(e.target.value)}
+              className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-neutral-900 leading-tight w-full bg-transparent border-0 border-b border-transparent focus:border-neutral-200 focus:outline-none py-1"
+              placeholder="Enter Title..."
+            />
+          </div>
+
+          {/* Subtitle Editor */}
+          <div className="relative group/subtitle">
+            <textarea
+              value={formData.subtitle}
+              onChange={(e) => setFormData(prev => ({ ...prev, subtitle: e.target.value }))}
+              className="text-lg sm:text-xl text-neutral-600 font-serif italic font-light max-w-3xl w-full bg-transparent border-0 border-b border-transparent focus:border-neutral-200 focus:outline-none py-1 resize-none h-auto overflow-hidden"
+              rows={2}
+              placeholder="Enter subtitle and short description hook..."
+            />
+          </div>
+
+          {/* Timeline & Tags Editor (Unified top metadata bar) */}
+          <div className="flex flex-wrap items-center gap-6 border-b border-neutral-100 pb-4 pt-2 text-left">
+            <div className="flex items-center space-x-2">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Timeline:</span>
+              <input
+                type="text"
+                value={formData.date}
+                onChange={(e) => setFormData(prev => ({ ...prev, date: e.target.value }))}
+                placeholder="e.g. May 2026"
+                className="text-sm text-neutral-700 bg-transparent border-0 border-b border-transparent focus:border-neutral-200 focus:outline-none py-0.5 max-w-[150px]"
+              />
+            </div>
+
+            <div className="relative flex items-center space-x-3">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Tags:</span>
+              <div className="flex flex-wrap gap-1.5">
+                {activeTagsList.map(tag => (
+                  <span
+                    key={tag.id}
+                    className="inline-flex items-center rounded-full border border-neutral-200 bg-neutral-50 px-2.5 py-0.5 text-xs font-semibold text-neutral-500"
+                  >
+                    {tag.name}
+                  </span>
+                ))}
+                {activeTagsList.length === 0 && (
+                  <span className="text-xs text-neutral-400 italic">No tags selected.</span>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowTagsPopover(!showTagsPopover)}
+                className="text-[10px] uppercase tracking-wider font-bold text-neutral-500 hover:text-neutral-900 hover:underline cursor-pointer"
+              >
+                Edit Tags
+              </button>
+
+              {/* Tags Selector Popover Bubble */}
+              {showTagsPopover && (
+                <div className="absolute top-8 left-0 z-50 bg-white border border-neutral-200 shadow-2xl p-4 min-w-[240px] max-w-[280px] rounded-none text-left">
+                  <div className="flex items-center justify-between border-b border-neutral-100 pb-2 mb-3">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">Toggle Article Tags</span>
+                    <button
+                      type="button"
+                      onClick={() => setShowTagsPopover(false)}
+                      className="text-neutral-400 hover:text-neutral-600 transition-colors"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5 max-h-[200px] overflow-y-auto">
+                    {availableTags.map(tag => {
+                      const isSelected = formData.tag_ids.includes(tag.id);
+                      return (
+                        <button
+                          type="button"
+                          key={tag.id}
+                          onClick={() => {
+                            setFormData(prev => {
+                              const ids = prev.tag_ids.includes(tag.id)
+                                ? prev.tag_ids.filter(id => id !== tag.id)
+                                : [...prev.tag_ids, tag.id];
+                              return { ...prev, tag_ids: ids };
+                            });
+                          }}
+                          className={`rounded-full px-2.5 py-1 text-[10px] uppercase font-semibold border cursor-pointer transition-all ${
+                            isSelected 
+                              ? 'text-neutral-700 bg-neutral-100 border-neutral-400 ring-1 ring-neutral-400'
+                              : 'text-neutral-400 bg-stone-50 border-neutral-200/50 hover:bg-neutral-100'
+                          }`}
+                        >
+                          {tag.name}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Interactive Showcase Hero Image Editor */}
+        {formData.imageUrl && formData.imageUrl.trim() !== '' ? (
+          <div className="relative aspect-video w-full overflow-hidden border border-neutral-200 bg-neutral-100 group/image">
+            <img
+              src={formData.imageUrl}
+              alt="Hero Header"
+              className="h-full w-full object-cover"
+            />
+            
+            {/* Overlay mask */}
+            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/image:opacity-100 transition-opacity flex flex-col items-center justify-center gap-3">
+              <button
+                type="button"
+                onClick={() => setShowImagePopover(!showImagePopover)}
+                className="bg-white text-neutral-900 hover:bg-neutral-900 hover:text-white px-4 py-2 text-xs font-semibold transition-all cursor-pointer rounded-none border border-neutral-200"
+              >
+                Change Cover Image URL
+              </button>
+              <button
+                type="button"
+                onClick={() => setFormData(prev => ({ ...prev, imageUrl: '' }))}
+                className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 text-xs font-semibold transition-all cursor-pointer rounded-none border border-rose-600"
+              >
+                Remove Cover Image
+              </button>
+            </div>
+
+            {/* Image Url Popover Card */}
+            {showImagePopover && (
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 bg-white border border-neutral-200 shadow-2xl p-4 w-full max-w-md rounded-none text-left">
+                <div className="flex items-center justify-between border-b border-neutral-100 pb-2 mb-3">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">Hero Image Settings</span>
+                  <button
+                    type="button"
+                    onClick={() => setShowImagePopover(false)}
+                    className="text-neutral-400 hover:text-neutral-600 transition-colors"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+                <div className="space-y-3">
+                  <div className="space-y-1">
+                    <label className="text-[9px] font-bold uppercase tracking-wider text-neutral-400">Hero Image URL</label>
+                    <input
+                      type="text"
+                      value={formData.imageUrl}
+                      onChange={(e) => setFormData(prev => ({ ...prev, imageUrl: e.target.value }))}
+                      className="w-full text-xs border border-neutral-200 px-3 py-2 focus:border-neutral-400 focus:outline-none"
+                      placeholder="https://images.unsplash.com/..."
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowImagePopover(false)}
+                    className="w-full bg-neutral-900 text-white text-xs font-semibold py-2 transition-colors cursor-pointer rounded-none"
+                  >
+                    Apply Image
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="border border-dashed border-neutral-300 bg-neutral-50/50 p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="text-left space-y-1">
+              <span className="text-sm font-semibold text-neutral-700 block">No cover image set</span>
+              <span className="text-xs text-neutral-400 block font-light">This article will use the text-only layout variation.</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setFormData(prev => ({ ...prev, imageUrl: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1200' }));
+                setShowImagePopover(true);
+              }}
+              className="bg-white hover:bg-neutral-50 border border-neutral-200 text-neutral-800 px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer rounded-none"
+            >
+              Add Cover Image
+            </button>
+          </div>
+        )}
+
+        {/* Main content blocks visual canvas */}
+        <div className="max-w-3xl mx-auto pt-6">
+          <BlockEditor
+            value={formData.content}
+            onChange={(newValue) => setFormData(prev => ({ ...prev, content: newValue }))}
+          />
+        </div>
+      </article>
+    </div>
+  );
+};
