@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { 
   ArrowLeft, 
@@ -116,6 +116,18 @@ export const FullPageEditor: React.FC = () => {
     loadEditorData();
   }, [id, isCreateMode, navigate]);
 
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setShowTagsPopover(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, []);
+
   // Helper to slugify titles to IDs
   const slugify = (text: string) => {
     return text
@@ -205,80 +217,78 @@ export const FullPageEditor: React.FC = () => {
   return (
     <div className="min-h-screen pb-24 text-left">
       {/* Sticky Edit Control Header Bar */}
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-neutral-200 py-4 mb-8 -mx-6 lg:-mx-8 px-6 lg:px-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="flex items-center space-x-3">
-          <Link
-            to="/admin"
-            className="p-2 border border-neutral-200 hover:border-neutral-400 text-neutral-500 hover:text-neutral-900 transition-colors flex items-center justify-center rounded-none"
-            title="Return to Dashboard"
-          >
-            <ArrowLeft size={16} />
-          </Link>
-          <div>
-            <h1 className="font-serif text-lg font-bold text-neutral-900 leading-none">
-              {isCreateMode ? 'Drafting New Post' : `Editing: ${formData.id}`}
-            </h1>
-            <span className="text-[10px] text-neutral-400 font-mono mt-0.5 block">
-              Status: {formData.draft ? 'DRAFT' : 'PUBLISHED'}
-            </span>
+      <header className="sticky top-0 z-40 w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] bg-white/90 backdrop-blur-md border-b border-neutral-200 mb-8">
+        <div className="mx-auto max-w-5xl px-6 lg:px-8 flex flex-col sm:flex-row sm:items-center sm:justify-between py-4 gap-4">
+          <div className="flex items-center space-x-4">
+            <Link
+              to="/admin"
+              className="p-2 border border-neutral-200 hover:border-neutral-400 text-neutral-500 hover:text-neutral-900 transition-colors flex items-center justify-center rounded-none"
+              title="Return to Dashboard"
+            >
+              <ArrowLeft size={16} />
+            </Link>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+              <div>
+                <h1 className="font-serif text-sm font-bold text-neutral-900 leading-none">
+                  {isCreateMode ? 'Drafting New Post' : 'Editing Post'}
+                </h1>
+                <span className="text-[9px] text-neutral-400 font-mono mt-0.5 block">
+                  Status: {formData.draft ? 'DRAFT' : 'PUBLISHED'}
+                </span>
+              </div>
+              <div className="flex items-center space-x-1.5 border border-neutral-200 bg-neutral-50 px-2.5 py-1 font-mono text-[11px] text-neutral-600">
+                <span className="text-[9px] text-neutral-400 font-bold uppercase tracking-wider">Slug:</span>
+                <input
+                  type="text"
+                  value={formData.id}
+                  onChange={(e) => setFormData(prev => ({ ...prev, id: slugify(e.target.value) }))}
+                  placeholder="slug-url-identifier"
+                  className="bg-transparent border-b border-transparent hover:border-neutral-300 focus:border-neutral-400 focus:outline-none w-40 sm:w-56 text-[11px] font-mono text-neutral-800"
+                />
+              </div>
+            </div>
           </div>
-        </div>
 
-        {/* Action Controls */}
-        <div className="flex items-center space-x-3">
-          {formError && (
-            <div className="flex items-center space-x-1 text-xs text-rose-600 bg-rose-50 border border-rose-100 px-3 py-2">
-              <AlertCircle size={14} />
-              <span>{formError}</span>
-            </div>
-          )}
+          {/* Action Controls */}
+          <div className="flex items-center space-x-3">
+            {formError && (
+              <div className="flex items-center space-x-1 text-xs text-rose-600 bg-rose-50 border border-rose-100 px-3 py-2">
+                <AlertCircle size={14} />
+                <span>{formError}</span>
+              </div>
+            )}
 
-          {formSuccess && (
-            <div className="flex items-center space-x-1 text-xs text-emerald-600 bg-emerald-50 border border-emerald-100 px-3 py-2">
-              <Check size={14} />
-              <span>{formSuccess}</span>
-            </div>
-          )}
+            {formSuccess && (
+              <div className="flex items-center space-x-1 text-xs text-emerald-600 bg-emerald-50 border border-emerald-100 px-3 py-2">
+                <Check size={14} />
+                <span>{formSuccess}</span>
+              </div>
+            )}
 
-          <button
-            type="button"
-            onClick={() => savePost(true)}
-            disabled={saving}
-            className="border border-neutral-300 bg-neutral-100 px-4 py-2 text-xs font-semibold text-neutral-700 hover:bg-neutral-200 transition-colors cursor-pointer rounded-none disabled:bg-neutral-50 disabled:text-neutral-400"
-          >
-            Save as Draft
-          </button>
-          
-          <button
-            type="button"
-            onClick={() => savePost(false)}
-            disabled={saving}
-            className="flex items-center justify-center space-x-1.5 bg-neutral-900 px-5 py-2 text-xs font-semibold text-white hover:bg-neutral-800 transition-colors cursor-pointer rounded-none disabled:bg-neutral-400"
-          >
-            <Save size={14} />
-            <span>{saving ? 'Saving...' : 'Publish'}</span>
-          </button>
+            <button
+              type="button"
+              onClick={() => savePost(true)}
+              disabled={saving}
+              className="border border-neutral-300 bg-neutral-100 px-4 py-2 text-xs font-semibold text-neutral-700 hover:bg-neutral-200 transition-colors cursor-pointer rounded-none disabled:bg-neutral-50 disabled:text-neutral-400"
+            >
+              Save as Draft
+            </button>
+            
+            <button
+              type="button"
+              onClick={() => savePost(false)}
+              disabled={saving}
+              className="flex items-center justify-center space-x-1.5 bg-neutral-900 px-5 py-2 text-xs font-semibold text-white hover:bg-neutral-800 transition-colors cursor-pointer rounded-none disabled:bg-neutral-400"
+            >
+              <Save size={14} />
+              <span>{saving ? 'Saving...' : 'Publish'}</span>
+            </button>
+          </div>
         </div>
       </header>
 
       {/* Editor Content Canvas Container */}
       <article className="max-w-4xl mx-auto space-y-12">
-        {/* Slug ID editor (Create Mode only) */}
-        {isCreateMode && (
-          <div className="border border-neutral-200 bg-stone-50/50 p-4 space-y-2">
-            <label className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 block">Slug URL Identifier (Primary Key)*</label>
-            <input
-              type="text"
-              value={formData.id}
-              onChange={(e) => setFormData(prev => ({ ...prev, id: slugify(e.target.value) }))}
-              placeholder="e.g. custom-webassembly-compiler"
-              className="w-full text-xs font-mono border border-neutral-200 bg-white px-3 py-2 focus:border-neutral-400 focus:outline-none"
-            />
-            <span className="text-[9px] text-neutral-400 block font-mono">
-              Url preview: http://localhost:5174/work/{formData.id || 'slug-id'}
-            </span>
-          </div>
-        )}
 
         {/* Metadata section (Title, Subtitle, Date) */}
         <div className="space-y-4">
@@ -316,13 +326,13 @@ export const FullPageEditor: React.FC = () => {
               />
             </div>
 
-            <div className="relative flex items-center space-x-3">
+            <div className="flex items-center space-x-3">
               <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Tags:</span>
               <div className="flex flex-wrap gap-1.5">
                 {activeTagsList.map(tag => (
                   <span
                     key={tag.id}
-                    className="inline-flex items-center rounded-full border border-neutral-200 bg-neutral-50 px-2.5 py-0.5 text-xs font-semibold text-neutral-500"
+                    className="inline-flex items-center rounded-full border border-neutral-200 bg-neutral-50 px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-neutral-500"
                   >
                     {tag.name}
                   </span>
@@ -331,55 +341,59 @@ export const FullPageEditor: React.FC = () => {
                   <span className="text-xs text-neutral-400 italic">No tags selected.</span>
                 )}
               </div>
-              <button
-                type="button"
-                onClick={() => setShowTagsPopover(!showTagsPopover)}
-                className="text-[10px] uppercase tracking-wider font-bold text-neutral-500 hover:text-neutral-900 hover:underline cursor-pointer"
-              >
-                Edit Tags
-              </button>
 
-              {/* Tags Selector Popover Bubble */}
-              {showTagsPopover && (
-                <div className="absolute top-8 left-0 z-50 bg-white border border-neutral-200 shadow-2xl p-4 min-w-[240px] max-w-[280px] rounded-none text-left">
-                  <div className="flex items-center justify-between border-b border-neutral-100 pb-2 mb-3">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">Toggle Article Tags</span>
-                    <button
-                      type="button"
-                      onClick={() => setShowTagsPopover(false)}
-                      className="text-neutral-400 hover:text-neutral-600 transition-colors"
-                    >
-                      <X size={16} />
-                    </button>
+              {/* Spacious Checkbox Dropdown */}
+              <div className="relative inline-block text-left" ref={dropdownRef}>
+                <button
+                  type="button"
+                  onClick={() => setShowTagsPopover(!showTagsPopover)}
+                  className="inline-flex items-center gap-x-1 border border-neutral-200 bg-white px-2.5 py-1 text-[10px] uppercase font-bold tracking-wider text-neutral-500 hover:text-neutral-900 hover:border-neutral-400 transition-colors cursor-pointer rounded-none"
+                >
+                  <span>Edit Tags</span>
+                  <svg className="h-3 w-3 text-neutral-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
+                  </svg>
+                </button>
+
+                {showTagsPopover && (
+                  <div className="absolute left-0 mt-2 z-50 w-52 border border-neutral-200 bg-white shadow-xl rounded-none text-left">
+                    <div className="py-1 divide-y divide-neutral-100">
+                      {availableTags.map(tag => {
+                        const isSelected = formData.tag_ids.includes(tag.id);
+                        return (
+                          <button
+                            type="button"
+                            key={tag.id}
+                            onClick={() => {
+                              setFormData(prev => {
+                                const ids = prev.tag_ids.includes(tag.id)
+                                  ? prev.tag_ids.filter(id => id !== tag.id)
+                                  : [...prev.tag_ids, tag.id];
+                                return { ...prev, tag_ids: ids };
+                              });
+                            }}
+                            className="flex items-center justify-between w-full px-3 py-2.5 text-left text-xs font-semibold text-neutral-700 hover:bg-neutral-50 transition-colors cursor-pointer"
+                          >
+                            <span className="uppercase tracking-wider text-[10px]">{tag.name}</span>
+                            <div className={`h-3.5 w-3.5 border flex items-center justify-center rounded-none transition-all ${
+                              isSelected ? 'bg-neutral-900 border-neutral-900 text-white' : 'border-neutral-300'
+                            }`}>
+                              {isSelected && (
+                                <svg className="h-2 w-2" viewBox="0 0 20 20" fill="currentColor">
+                                  <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
+                                </svg>
+                              )}
+                            </div>
+                          </button>
+                        );
+                      })}
+                      {availableTags.length === 0 && (
+                        <div className="px-3 py-2.5 text-xs text-neutral-400 italic">No tags found.</div>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex flex-wrap gap-1.5 max-h-[200px] overflow-y-auto">
-                    {availableTags.map(tag => {
-                      const isSelected = formData.tag_ids.includes(tag.id);
-                      return (
-                        <button
-                          type="button"
-                          key={tag.id}
-                          onClick={() => {
-                            setFormData(prev => {
-                              const ids = prev.tag_ids.includes(tag.id)
-                                ? prev.tag_ids.filter(id => id !== tag.id)
-                                : [...prev.tag_ids, tag.id];
-                              return { ...prev, tag_ids: ids };
-                            });
-                          }}
-                          className={`rounded-full px-2.5 py-1 text-[10px] uppercase font-semibold border cursor-pointer transition-all ${
-                            isSelected 
-                              ? 'text-neutral-700 bg-neutral-100 border-neutral-400 ring-1 ring-neutral-400'
-                              : 'text-neutral-400 bg-stone-50 border-neutral-200/50 hover:bg-neutral-100'
-                          }`}
-                        >
-                          {tag.name}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
         </div>

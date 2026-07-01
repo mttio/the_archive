@@ -58,7 +58,7 @@ export const Navbar: React.FC = () => {
           {/* Logo / Title */}
           <Link to="/" className="flex items-center space-x-2 group">
             <span className="font-serif text-xl font-bold tracking-tight text-neutral-900 transition-colors group-hover:text-neutral-600">
-              Matteo Berga
+              The Archive <span className="text-neutral-400 font-normal text-sm ml-1 select-none">by Matteo Berga</span>
             </span>
             <span className="h-1.5 w-1.5 rounded-none bg-neutral-400 group-hover:bg-neutral-900 transition-all duration-300"></span>
           </Link>
@@ -83,7 +83,7 @@ export const Navbar: React.FC = () => {
           {/* Social Links */}
           <div className="hidden md:flex items-center space-x-4 border-l border-neutral-200 pl-6 ml-2">
             <a
-              href="https://github.com"
+              href="https://github.com/mttio"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="GitHub"
@@ -92,7 +92,7 @@ export const Navbar: React.FC = () => {
               <Github size={18} />
             </a>
             <a
-              href="https://linkedin.com"
+              href="https://www.linkedin.com/in/matteo-berga-7332a52a6/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="LinkedIn"
@@ -101,7 +101,7 @@ export const Navbar: React.FC = () => {
               <Linkedin size={18} />
             </a>
             <a
-              href="https://instagram.com"
+              href="https://www.instagram.com/mtt_brg/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram/Art"
@@ -110,7 +110,7 @@ export const Navbar: React.FC = () => {
               <Camera size={18} />
             </a>
             <a
-              href="https://strava.com"
+              href="https://www.strava.com/athletes/118901811"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Strava/Sports"
@@ -150,7 +150,7 @@ export const Navbar: React.FC = () => {
           ))}
           <div className="flex items-center space-x-5 pt-4 border-t border-neutral-200">
             <a
-              href="https://github.com"
+              href="https://github.com/mttio"
               target="_blank"
               rel="noopener noreferrer"
               className="text-neutral-500 hover:text-neutral-900 transition-colors"
@@ -158,7 +158,7 @@ export const Navbar: React.FC = () => {
               <Github size={20} />
             </a>
             <a
-              href="https://linkedin.com"
+              href="https://www.linkedin.com/in/matteo-berga-7332a52a6/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-neutral-500 hover:text-neutral-900 transition-colors"
@@ -166,7 +166,7 @@ export const Navbar: React.FC = () => {
               <Linkedin size={20} />
             </a>
             <a
-              href="https://instagram.com"
+              href="https://www.instagram.com/mtt_brg/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-neutral-500 hover:text-neutral-900 transition-colors"
@@ -174,7 +174,7 @@ export const Navbar: React.FC = () => {
               <Camera size={20} />
             </a>
             <a
-              href="https://strava.com"
+              href="https://www.strava.com/athletes/118901811"
               target="_blank"
               rel="noopener noreferrer"
               className="text-neutral-500 hover:text-neutral-900 transition-colors"

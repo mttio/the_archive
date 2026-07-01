@@ -51,7 +51,7 @@ class WorkCreate(WorkBase):
     id: str = Field(..., min_length=2)
 
 class WorkUpdate(WorkBase):
-    pass
+    id: Optional[str] = None
 
 class ContactFormInput(BaseModel):
     name: str = Field(..., min_length=1)
@@ -181,8 +181,15 @@ def update_work(work_id: str, work: WorkUpdate, authorized: bool = Depends(check
         raise HTTPException(status_code=404, detail="Work item not found.")
         
     try:
+        # Delete existing tags link first to prevent foreign key violation during ID change
+        cursor.execute("DELETE FROM work_tags WHERE work_id = ?", (work_id,))
+        
+        new_id = work.id if work.id else work_id
+        
+        # Update the works record
         cursor.execute("""
         UPDATE works SET 
+            id = ?,
             title = ?,
             subtitle = ?,
             content = ?,
@@ -191,6 +198,7 @@ def update_work(work_id: str, work: WorkUpdate, authorized: bool = Depends(check
             draft = ?
         WHERE id = ?
         """, (
+            new_id,
             work.title,
             work.subtitle,
             work.content,
@@ -200,14 +208,14 @@ def update_work(work_id: str, work: WorkUpdate, authorized: bool = Depends(check
             work_id
         ))
         
-        # Clear existing tags
-        cursor.execute("DELETE FROM work_tags WHERE work_id = ?", (work_id,))
-        
-        # Insert new tags
+        # Insert new tag connections
         for tag_id in work.tag_ids:
-            cursor.execute("INSERT INTO work_tags (work_id, tag_id) VALUES (?, ?)", (work_id, tag_id))
+            cursor.execute("INSERT INTO work_tags (work_id, tag_id) VALUES (?, ?)", (new_id, tag_id))
             
         conn.commit()
+    except sqlite3.IntegrityError:
+        conn.close()
+        raise HTTPException(status_code=400, detail="This slug URL identifier is already in use by another article.")
     except Exception as e:
         conn.close()
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")

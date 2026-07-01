@@ -10,7 +10,7 @@ export const Footer: React.FC = () => {
           &copy; {currentYear} Matteo Berga. All rights reserved.
         </p>
         <p className="text-xs text-neutral-400 font-sans italic">
-          Designed with intention &bull; Artist, Engineer, Athlete.
+          Designed with intention by Matteo Berga
         </p>
       </div>
     </footer>

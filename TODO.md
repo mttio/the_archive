@@ -9,3 +9,11 @@
 - [x] By clicking on a published article in the admin page you are redirected to the final article page
 - [x] Date can be chosen by use of a calendar like feature. Default date is current day for new articles
 - [x] I changed my mind about the drag and drop in edit page. Let's use arrows as in the previous version. Add those to the new appearing menu to change the element type that works great now.
+- [x] articles in the admin page must be ordered by date, like in the home page
+- [x] the current EDIT TAGS functionality inside the new/edit page feels a little bit chuncky. Let's create maybe a cool dropdown menu where tags are better spaced.
+- [x] Tags must be ALLCAPS in every part of the application (in some menus they are not now)
+- [x] let's keep the possibility to edit the slug url identifier at any moment (Not only in the new page). Both in the edit and new page the top bar should feature a slot for inline-editing the slug url. (the current slug url section in the new page will be replaced by the new common one)
+- [x] the top bar in the new/edit page is featuring a weird white background that floats in the middle of the page. Let's fix it by making the white background take all the horizontal space up to the sides. (keep the buttons and stuff in the same position they are now)
+- [x] in the bottom right corner replace the "Designed with intention • Artist, Engineer, Athlete" with just "Designed with intention by Matteo Berga"
+- [x] the icons in the topbar should lead to the same website pages I added in the contact page
+- [x] change the title of the site on the top left with "The Archive by Matteo Berga" in which "by Matteo Berga" should be colored with a slightly lighter grey

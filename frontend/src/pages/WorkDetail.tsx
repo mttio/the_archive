@@ -364,7 +364,7 @@ export const WorkDetail: React.FC = () => {
             {item.tags && item.tags.map((tag) => (
               <span
                 key={tag.id}
-                className="inline-flex items-center rounded-full border border-neutral-200 bg-neutral-50 px-2.5 py-0.5 text-xs font-semibold text-neutral-500"
+                className="inline-flex items-center rounded-full border border-neutral-200 bg-neutral-50 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-neutral-500"
               >
                 {tag.name}
               </span>

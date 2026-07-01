@@ -152,10 +152,6 @@ export const Admin: React.FC = () => {
     }
   };
 
-  // Get matching Tailwind classes for predefined theme colors
-  const getTagColorClasses = (_color: string) => {
-    return 'text-neutral-500 bg-neutral-50 border-neutral-200';
-  };
 
   const formatDateForDisplay = (dateStr: string): string => {
     if (!dateStr) return '';
@@ -172,8 +168,30 @@ export const Admin: React.FC = () => {
     return dateStr;
   };
 
-  const publishedWorks = works.filter((item) => !item.draft);
-  const draftWorks = works.filter((item) => item.draft);
+  const parseDateString = (dateStr: string): number => {
+    if (!dateStr) return 0;
+    const months: Record<string, number> = {
+      january: 0, february: 1, march: 2, april: 3, may: 4, june: 5,
+      july: 6, august: 7, september: 8, october: 9, november: 10, december: 11
+    };
+    const parts = dateStr.trim().toLowerCase().split(/\s+/);
+    if (parts.length === 2) {
+      const [monthStr, yearStr] = parts;
+      const month = months[monthStr] ?? 0;
+      const year = parseInt(yearStr, 10) || 0;
+      return new Date(year, month, 1).getTime();
+    }
+    const parsed = Date.parse(dateStr);
+    return isNaN(parsed) ? 0 : parsed;
+  };
+
+  const publishedWorks = [...works]
+    .filter((item) => !item.draft)
+    .sort((a, b) => parseDateString(b.date) - parseDateString(a.date));
+    
+  const draftWorks = [...works]
+    .filter((item) => item.draft)
+    .sort((a, b) => parseDateString(b.date) - parseDateString(a.date));
 
   const renderTable = (items: WorkItem[], emptyMessage: string) => {
     if (items.length === 0) {
@@ -215,7 +233,7 @@ export const Admin: React.FC = () => {
               <div className="flex flex-wrap gap-1">
                 {item.tags && item.tags.length > 0 ? (
                   item.tags.map(t => (
-                    <span key={t.id} className={`text-[8px] font-semibold rounded-full px-1.5 py-0.2 border ${getTagColorClasses(t.color)}`}>
+                    <span key={t.id} className="text-[8px] font-semibold uppercase tracking-wider rounded-full px-1.5 py-0.2 border border-neutral-200 bg-neutral-50 text-neutral-500">
                       {t.name}
                     </span>
                   ))
@@ -285,7 +303,7 @@ export const Admin: React.FC = () => {
                     <div className="flex flex-wrap gap-1">
                       {item.tags && item.tags.length > 0 ? (
                         item.tags.map(t => (
-                          <span key={t.id} className={`text-[9px] font-semibold rounded-full px-1.5 py-0.2 border ${getTagColorClasses(t.color)}`}>
+                          <span key={t.id} className="text-[9px] font-semibold uppercase tracking-wider rounded-full px-1.5 py-0.2 border border-neutral-200 bg-neutral-50 text-neutral-500">
                             {t.name}
                           </span>
                         ))
