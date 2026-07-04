@@ -1,16 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { 
   ArrowLeft, 
   Save, 
   Check,
   X,
-  AlertCircle
+  AlertCircle,
+  Eye,
+  FileText,
+  Upload,
+  Bold,
+  Italic,
+  Heading2,
+  Heading3,
+  List,
+  ListOrdered,
+  Image as ImageIcon,
+  Sliders as CarouselIcon,
+  LayoutGrid
 } from 'lucide-react';
 import { api } from '../services/api';
 import type { ApiWorkInput } from '../services/api';
 import type { TagItem } from '../data/works';
-import { BlockEditor } from '../components/BlockEditor';
+import { parseMarkdownToReact } from '../utils/markdown';
 
 const MONTHS: Record<string, number> = {
   january: 0, february: 1, march: 2, april: 3, may: 4, june: 5,
@@ -51,18 +63,22 @@ export const FullPageEditor: React.FC = () => {
   // Available tags list
   const [availableTags, setAvailableTags] = useState<TagItem[]>([]);
   const [showImagePopover, setShowImagePopover] = useState(false);
+  const [activeTab, setActiveTab] = useState<'write' | 'preview'>('write');
 
   // Form state
   const [formData, setFormData] = useState<ApiWorkInput>({
     id: '',
     title: '',
     subtitle: '',
-    content: JSON.stringify([{ type: 'text', id: 'init-text', value: '' }]),
+    content: '',
     date: new Date().toISOString().split('T')[0],
     imageUrl: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1200',
     draft: true,
     tag_ids: [],
   });
+
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Verify auth on mount and load data
   useEffect(() => {
@@ -98,7 +114,7 @@ export const FullPageEditor: React.FC = () => {
             id: '',
             title: 'Untitled Post',
             subtitle: 'Write an elegant subtitle or summary hook here...',
-            content: JSON.stringify([{ type: 'text', id: 'init-text', value: '' }]),
+            content: '',
             date: new Date().toLocaleString('default', { month: 'long', year: 'numeric' }),
             imageUrl: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1200',
             draft: true,
@@ -114,7 +130,6 @@ export const FullPageEditor: React.FC = () => {
 
     loadEditorData();
   }, [id, isCreateMode, navigate]);
-
 
   // Helper to slugify titles to IDs
   const slugify = (text: string) => {
@@ -136,6 +151,72 @@ export const FullPageEditor: React.FC = () => {
         id: updatedId,
       };
     });
+  };
+
+  const insertMarkdown = (syntax: string) => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = formData.content;
+    const before = text.substring(0, start);
+    const after = text.substring(end);
+    const selected = text.substring(start, end);
+
+    let replacement = '';
+    if (syntax === 'bold') {
+      replacement = `**${selected || 'bold text'}**`;
+    } else if (syntax === 'italic') {
+      replacement = `*${selected || 'italic text'}*`;
+    } else if (syntax === 'h2') {
+      replacement = `\n## ${selected || 'Heading 2'}\n`;
+    } else if (syntax === 'h3') {
+      replacement = `\n### ${selected || 'Heading 3'}\n`;
+    } else if (syntax === 'bullet') {
+      replacement = `\n- ${selected || 'List item'}`;
+    } else if (syntax === 'number') {
+      replacement = `\n1. ${selected || 'List item'}`;
+    } else if (syntax === 'image') {
+      replacement = `\n![[image: https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1200 | layout: center | caption: Caption]]\n`;
+    } else if (syntax === 'carousel') {
+      replacement = `\n![[carousel: url1, url2 | captions: Slide 1, Slide 2]]\n`;
+    } else if (syntax === 'collage') {
+      replacement = `\n![[collage: url1, url2 | caption: Caption]]\n`;
+    }
+
+    const newContent = before + replacement + after;
+    setFormData(prev => ({ ...prev, content: newContent }));
+
+    // Re-focus and set selection
+    setTimeout(() => {
+      textarea.focus();
+      const newPos = start + replacement.length;
+      textarea.setSelectionRange(newPos, newPos);
+    }, 50);
+  };
+
+  const handleImportClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const text = event.target?.result as string;
+      if (text) {
+        setFormData(prev => ({
+          ...prev,
+          content: text
+        }));
+        setFormSuccess('Markdown file imported successfully!');
+        setTimeout(() => setFormSuccess(''), 3000);
+      }
+    };
+    reader.readAsText(file);
   };
 
   const savePost = async (isDraft: boolean) => {
@@ -175,7 +256,7 @@ export const FullPageEditor: React.FC = () => {
         await api.createWork(payload);
         setFormSuccess('Article created successfully!');
       } else {
-        await api.updateWork(formData.id!, payload);
+        await api.updateWork(id!, payload);
         setFormSuccess('Article updated successfully!');
       }
 
@@ -190,7 +271,6 @@ export const FullPageEditor: React.FC = () => {
     }
   };
 
-
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-32 text-center">
@@ -199,9 +279,17 @@ export const FullPageEditor: React.FC = () => {
     );
   }
 
-
   return (
     <div className="min-h-screen pb-24 text-left">
+      {/* Hidden file input */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        accept=".md,.txt,.markdown"
+        className="hidden"
+      />
+
       {/* Sticky Edit Control Header Bar */}
       <header className="sticky top-0 z-40 w-screen ml-[calc(-50vw+50%)] bg-white/90 backdrop-blur-md border-b border-neutral-200 mb-8">
         <div className="mx-auto max-w-5xl px-6 lg:px-8 flex flex-col sm:flex-row sm:items-center sm:justify-between py-4 gap-4">
@@ -274,7 +362,7 @@ export const FullPageEditor: React.FC = () => {
       </header>
 
       {/* Editor Content Canvas Container */}
-      <article className="max-w-4xl mx-auto space-y-12">
+      <article className="max-w-4xl mx-auto space-y-8">
 
         {/* Metadata section (Title, Subtitle, Date) */}
         <div className="space-y-4">
@@ -349,7 +437,7 @@ export const FullPageEditor: React.FC = () => {
 
         {/* Interactive Showcase Hero Image Editor */}
         {formData.imageUrl && formData.imageUrl.trim() !== '' ? (
-          <div className="relative aspect-video w-full overflow-hidden border border-neutral-200 bg-neutral-100 group/image">
+          <div className="relative aspect-video w-full overflow-hidden bg-neutral-50 group/image">
             <img
               src={formData.imageUrl}
               alt="Hero Header"
@@ -428,12 +516,149 @@ export const FullPageEditor: React.FC = () => {
           </div>
         )}
 
-        {/* Main content blocks visual canvas */}
-        <div className="max-w-3xl mx-auto pt-6">
-          <BlockEditor
-            value={formData.content}
-            onChange={(newValue) => setFormData(prev => ({ ...prev, content: newValue }))}
-          />
+        {/* Tab Selection (Write vs Preview) */}
+        <div className="flex items-center justify-between border-b border-neutral-200 pb-2 pt-4">
+          <div className="flex space-x-1 bg-stone-100 p-0.5">
+            <button
+              type="button"
+              onClick={() => setActiveTab('write')}
+              className={`flex items-center space-x-1.5 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer rounded-none ${
+                activeTab === 'write'
+                  ? 'bg-white text-neutral-900 shadow-xs font-bold'
+                  : 'text-neutral-500 hover:text-neutral-800'
+              }`}
+            >
+              <FileText size={14} />
+              <span>Write</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('preview')}
+              className={`flex items-center space-x-1.5 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer rounded-none ${
+                activeTab === 'preview'
+                  ? 'bg-white text-neutral-900 shadow-xs font-bold'
+                  : 'text-neutral-500 hover:text-neutral-800'
+              }`}
+            >
+              <Eye size={14} />
+              <span>Preview</span>
+            </button>
+          </div>
+
+          {activeTab === 'write' && (
+            <button
+              type="button"
+              onClick={handleImportClick}
+              className="flex items-center space-x-1.5 border border-neutral-200 bg-white hover:bg-neutral-50 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-neutral-600 transition-colors cursor-pointer rounded-none"
+            >
+              <Upload size={12} />
+              <span>Import Markdown</span>
+            </button>
+          )}
+        </div>
+
+        {/* Main Work Content Area */}
+        <div className="pt-2">
+          {activeTab === 'write' ? (
+            <div className="space-y-3">
+              {/* Toolbar */}
+              <div className="flex flex-wrap items-center gap-1 border border-neutral-200 bg-stone-50/50 p-1.5 select-none">
+                <button
+                  type="button"
+                  onClick={() => insertMarkdown('bold')}
+                  className="p-1.5 hover:bg-neutral-200 text-neutral-600 hover:text-neutral-900 cursor-pointer"
+                  title="Bold (**text**)"
+                >
+                  <Bold size={14} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertMarkdown('italic')}
+                  className="p-1.5 hover:bg-neutral-200 text-neutral-600 hover:text-neutral-900 cursor-pointer"
+                  title="Italic (*text*)"
+                >
+                  <Italic size={14} />
+                </button>
+                <div className="h-4 w-px bg-neutral-300 mx-1" />
+                <button
+                  type="button"
+                  onClick={() => insertMarkdown('h2')}
+                  className="p-1.5 hover:bg-neutral-200 text-neutral-600 hover:text-neutral-900 cursor-pointer"
+                  title="Heading 2 (##)"
+                >
+                  <Heading2 size={14} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertMarkdown('h3')}
+                  className="p-1.5 hover:bg-neutral-200 text-neutral-600 hover:text-neutral-900 cursor-pointer"
+                  title="Heading 3 (###)"
+                >
+                  <Heading3 size={14} />
+                </button>
+                <div className="h-4 w-px bg-neutral-300 mx-1" />
+                <button
+                  type="button"
+                  onClick={() => insertMarkdown('bullet')}
+                  className="p-1.5 hover:bg-neutral-200 text-neutral-600 hover:text-neutral-900 cursor-pointer"
+                  title="Bulleted List (-)"
+                >
+                  <List size={14} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertMarkdown('number')}
+                  className="p-1.5 hover:bg-neutral-200 text-neutral-600 hover:text-neutral-900 cursor-pointer"
+                  title="Numbered List (1.)"
+                >
+                  <ListOrdered size={14} />
+                </button>
+                <div className="h-4 w-px bg-neutral-300 mx-1" />
+                <button
+                  type="button"
+                  onClick={() => insertMarkdown('image')}
+                  className="flex items-center space-x-1 px-2 py-1 text-[10px] uppercase font-bold tracking-wider hover:bg-neutral-200 text-neutral-600 hover:text-neutral-900 cursor-pointer"
+                  title="Embed Single Image"
+                >
+                  <ImageIcon size={12} />
+                  <span>Image</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertMarkdown('carousel')}
+                  className="flex items-center space-x-1 px-2 py-1 text-[10px] uppercase font-bold tracking-wider hover:bg-neutral-200 text-neutral-600 hover:text-neutral-900 cursor-pointer"
+                  title="Embed Carousel"
+                >
+                  <CarouselIcon size={12} />
+                  <span>Carousel</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => insertMarkdown('collage')}
+                  className="flex items-center space-x-1 px-2 py-1 text-[10px] uppercase font-bold tracking-wider hover:bg-neutral-200 text-neutral-600 hover:text-neutral-900 cursor-pointer"
+                  title="Embed Collage Grid"
+                >
+                  <LayoutGrid size={12} />
+                  <span>Collage</span>
+                </button>
+              </div>
+
+              {/* Textarea Editor Box */}
+              <textarea
+                ref={textareaRef}
+                value={formData.content}
+                onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
+                className="w-full min-h-[450px] border border-neutral-200 p-4 font-mono text-[13px] leading-relaxed focus:border-neutral-400 focus:outline-none bg-white text-neutral-800 resize-y"
+                placeholder="Write article content in standard Markdown style... Use the toolbar shortcuts to embed custom Obsidian-style media links such as ![[image: url | layout: center]]"
+              />
+            </div>
+          ) : (
+            <div className="border border-neutral-200 bg-white p-6 md:p-8 min-h-[500px]">
+              <div className="prose prose-neutral max-w-3xl mx-auto text-left">
+                {parseMarkdownToReact(formData.content)}
+              </div>
+            </div>
+          )}
         </div>
       </article>
     </div>
