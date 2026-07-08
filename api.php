@@ -1,10 +1,8 @@
 <?php
 // Secure PHP reverse proxy for Aruba Shared Hosting to VPS (IPv6)
 
-// Configure the VPS endpoint (use the exact IPv6 address of your Aruba VPS)
-$vps_ipv6 = '2a00:6d40:72:101::606';
-// We proxy to Nginx (port 80) on the VPS, which handles forwarding to the Python FastAPI daemon
-$target_url = "http://[" . $vps_ipv6 . "]/api" . ($_SERVER['PATH_INFO'] ?? '');
+// Configure the VPS Cloudflare subdomain endpoint
+$target_url = "http://api.matteoberga.com/api" . ($_SERVER['PATH_INFO'] ?? '');
 
 if (isset($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING'] !== '') {
     $target_url .= '?' . $_SERVER['QUERY_STRING'];
@@ -16,7 +14,7 @@ $ch = curl_init();
 // Set cURL options
 curl_setopt($ch, CURLOPT_URL, $target_url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HEADER, true); // Include response headers in output
+curl_setopt($ch, CURLOPT_HEADER, true);
 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
 curl_setopt($ch, CURLOPT_TIMEOUT, 60);
 
@@ -30,10 +28,27 @@ if (in_array($method, ['POST', 'PUT', 'PATCH', 'DELETE'])) {
     curl_setopt($ch, CURLOPT_POSTFIELDS, $input);
 }
 
-// Forward request headers
+// Robust Headers extraction fallback for Apache/PHP-FPM on Shared Hosting
 $headers = [];
-foreach (getallheaders() as $key => $value) {
-    // Avoid forwarding the Host header to let Nginx default server catch it on the VPS
+$source_headers = function_exists('getallheaders') ? getallheaders() : [];
+
+// If getallheaders is empty or doesn't have custom headers, extract from $_SERVER
+if (empty($source_headers) || !isset($source_headers['X-Admin-Passphrase'])) {
+    foreach ($_SERVER as $key => $value) {
+        if (strpos($key, 'HTTP_') === 0) {
+            // Convert HTTP_X_ADMIN_PASSPHRASE -> X-Admin-Passphrase
+            $header_name = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($key, 5)))));
+            $source_headers[$header_name] = $value;
+        } elseif ($key === 'CONTENT_TYPE') {
+            $source_headers['Content-Type'] = $value;
+        } elseif ($key === 'CONTENT_LENGTH') {
+            $source_headers['Content-Length'] = $value;
+        }
+    }
+}
+
+// Build headers array for cURL
+foreach ($source_headers as $key => $value) {
     if (strtolower($key) !== 'host') {
         $headers[] = "$key: $value";
     }
@@ -75,7 +90,6 @@ http_response_code($http_code);
 $resp_headers = explode("\r\n", $resp_headers_str);
 foreach ($resp_headers as $header) {
     if (strpos($header, 'HTTP/') !== 0 && !empty($header)) {
-        // Ignore Transfer-Encoding chunked to let Apache handle output chunking
         if (stripos($header, 'transfer-encoding:') === false) {
             header($header);
         }
