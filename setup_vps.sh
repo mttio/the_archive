@@ -96,9 +96,9 @@ NGINX_FILE="/etc/nginx/sites-available/$DOMAIN_NAME"
 
 cat <<EOT > "$NGINX_FILE"
 server {
-    listen 80;
-    listen [::]:80;
-    server_name $DOMAIN_NAME www.$DOMAIN_NAME;
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name _ $DOMAIN_NAME www.$DOMAIN_NAME;
 
     # Frontend Static Site
     root $PROJECT_DIR/frontend/dist;
