@@ -1,6 +1,16 @@
 import type { WorkItem, TagItem } from '../data/works';
 
-const API_BASE_URL = 'http://localhost:8000/api';
+const getApiBaseUrl = (): string => {
+  if (import.meta.env.VITE_API_BASE_URL) {
+    return import.meta.env.VITE_API_BASE_URL;
+  }
+  if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+    return '/api';
+  }
+  return 'http://localhost:8000/api';
+};
+
+export const API_BASE_URL = getApiBaseUrl();
 
 export interface ApiWorkInput {
   id?: string;
@@ -192,5 +202,26 @@ export const api = {
       const errorData = await response.json();
       throw new Error(errorData.detail || 'Failed to delete contact message.');
     }
+  },
+
+  // Upload an image file (Admin)
+  async uploadImage(file: File): Promise<{ id: string; url: string }> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const headers = getAuthHeaders();
+    delete headers['Content-Type'];
+
+    const response = await fetch(`${API_BASE_URL}/admin/images/upload`, {
+      method: 'POST',
+      headers,
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || 'Failed to upload image.');
+    }
+    return response.json();
   }
 };

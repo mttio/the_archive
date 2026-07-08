@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Camera, Activity } from 'lucide-react';
+import { Menu, X, Camera, Activity, Sun, Moon } from 'lucide-react';
+import { useTheme } from '../hooks/useTheme';
 
 const Github: React.FC<{ size?: number }> = ({ size = 18 }) => (
   <svg
@@ -57,28 +58,28 @@ const Youtube: React.FC<{ size?: number }> = ({ size = 18 }) => (
 export const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { toggleTheme, isDark } = useTheme();
 
   const isActive = (path: string) => {
     return location.pathname === path;
   };
 
   const navLinks = [
-    { name: 'Works & Blog', path: '/' },
+    { name: 'Articles', path: '/' },
     { name: 'About', path: '/about' },
     { name: 'Contact', path: '/contact' },
   ];
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-neutral-200 bg-stone-50/80 backdrop-blur-md">
+    <nav className="sticky top-0 z-50 w-full border-b border-neutral-300/80 bg-stone-50/80 backdrop-blur-md mb-8 dark:bg-stone-950/80 dark:border-stone-800/80">
       <div className="mx-auto max-w-5xl px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-14 items-center justify-between">
           {/* Logo / Title */}
           <Link to="/" className="flex items-center space-x-2 group">
-            <span className="font-serif text-xl font-bold tracking-tight text-neutral-900 transition-colors group-hover:text-neutral-600 transition-all duration-300">
-              The Archive 
-              <span className="text-neutral-400 font-normal text-sm ml-1 select-none">by Matteo Berga</span>
+            <span className="font-sans text-[15px] font-black tracking-widest text-neutral-900 dark:text-stone-100 uppercase transition-colors group-hover:text-neutral-600 dark:group-hover:text-stone-400 transition-all duration-300">
+              The Archive
             </span>
-            </Link>
+          </Link>
 
           {/* Desktop Nav Links */}
           <div className="hidden md:flex items-center space-x-8">
@@ -86,10 +87,10 @@ export const Navbar: React.FC = () => {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`text-sm font-medium tracking-wide transition-colors duration-200 ${
+                className={`text-[10px] font-light tracking-[0.25em] uppercase transition-colors duration-200 ${
                   isActive(link.path)
-                    ? 'text-neutral-900 border-b border-neutral-900 pb-1'
-                    : 'text-neutral-500 hover:text-neutral-900 pb-1 border-b border-transparent'
+                    ? 'text-neutral-900 font-semibold border-b border-neutral-900 dark:text-stone-100 dark:border-stone-100 pb-0.5'
+                    : 'text-neutral-400 hover:text-neutral-900 dark:text-stone-500 dark:hover:text-stone-100 pb-0.5 border-b border-transparent'
                 }`}
               >
                 {link.name}
@@ -97,63 +98,79 @@ export const Navbar: React.FC = () => {
             ))}
           </div>
 
-          {/* Social Links */}
-          <div className="hidden md:flex items-center space-x-4 border-l border-neutral-200 pl-6 ml-2">
+          {/* Social Links & Theme Toggle */}
+          <div className="hidden md:flex items-center space-x-4 border-l border-neutral-200 dark:border-stone-800 pl-6 ml-2">
             <a
               href="https://github.com/mttio"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="GitHub"
-              className="text-neutral-500 hover:text-neutral-950 transition-colors"
+              className="text-neutral-400 hover:text-neutral-900 dark:text-stone-500 dark:hover:text-stone-100 transition-colors"
             >
-              <Github size={18} />
+              <Github size={15} />
             </a>
             <a
               href="https://www.linkedin.com/in/matteo-berga-7332a52a6/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="LinkedIn"
-              className="text-neutral-500 hover:text-neutral-950 transition-colors"
+              className="text-neutral-400 hover:text-neutral-900 dark:text-stone-500 dark:hover:text-stone-100 transition-colors"
             >
-              <Linkedin size={18} />
+              <Linkedin size={15} />
             </a>
             <a
               href="https://www.instagram.com/mtt_brg/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram/Art"
-              className="text-neutral-500 hover:text-neutral-950 transition-colors"
+              className="text-neutral-400 hover:text-neutral-900 dark:text-stone-500 dark:hover:text-stone-100 transition-colors"
             >
-              <Camera size={18} />
+              <Camera size={15} />
             </a>
             <a
               href="https://www.strava.com/athletes/118901811"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Strava/Sports"
-              className="text-neutral-500 hover:text-neutral-950 transition-colors"
+              className="text-neutral-400 hover:text-neutral-900 dark:text-stone-500 dark:hover:text-stone-100 transition-colors"
             >
-              <Activity size={18} />
+              <Activity size={15} />
             </a>
             <a
               href="https://www.youtube.com/@matteoberga"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="YouTube"
-              className="text-neutral-500 hover:text-neutral-950 transition-colors"
+              className="text-neutral-400 hover:text-neutral-900 dark:text-stone-500 dark:hover:text-stone-100 transition-colors"
             >
-              <Youtube size={18} />
+              <Youtube size={15} />
             </a>
+            
+            {/* Desktop Theme Switcher */}
+            <button
+              onClick={toggleTheme}
+              aria-label="Toggle Theme"
+              className="text-neutral-400 hover:text-neutral-900 dark:text-stone-500 dark:hover:text-stone-100 transition-colors cursor-pointer border-l border-neutral-200 dark:border-stone-800 pl-4 ml-1"
+            >
+              {isDark ? <Sun size={15} /> : <Moon size={15} />}
+            </button>
           </div>
 
-          {/* Mobile Menu Button */}
-          <div className="flex md:hidden">
+          {/* Mobile Theme Switcher & Menu Button */}
+          <div className="flex md:hidden items-center space-x-3">
+            <button
+              onClick={toggleTheme}
+              aria-label="Toggle Theme"
+              className="text-neutral-400 hover:text-neutral-900 dark:text-stone-500 dark:hover:text-stone-100 transition-colors cursor-pointer"
+            >
+              {isDark ? <Sun size={15} /> : <Moon size={15} />}
+            </button>
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center rounded-none p-2 text-neutral-500 hover:text-neutral-900 focus:outline-none"
+              className="inline-flex items-center justify-center rounded-none p-2 text-neutral-400 hover:text-neutral-900 dark:text-stone-500 dark:hover:text-stone-100 focus:outline-none"
               aria-expanded={isOpen}
             >
-              {isOpen ? <X size={20} /> : <Menu size={20} />}
+              {isOpen ? <X size={18} /> : <Menu size={18} />}
             </button>
           </div>
         </div>
@@ -161,59 +178,61 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden border-b border-neutral-200 bg-stone-50 px-6 py-4 space-y-3">
+        <div className="md:hidden border-b border-neutral-300/80 bg-stone-50 dark:bg-stone-950 dark:border-stone-800 px-6 py-4 space-y-3">
           {navLinks.map((link) => (
             <Link
               key={link.path}
               to={link.path}
               onClick={() => setIsOpen(false)}
-              className={`block text-base font-medium transition-colors ${
-                isActive(link.path) ? 'text-neutral-900' : 'text-neutral-500 hover:text-neutral-900'
+              className={`block text-[11px] font-light tracking-[0.2em] uppercase transition-colors ${
+                isActive(link.path) 
+                  ? 'text-neutral-900 font-medium dark:text-stone-100' 
+                  : 'text-neutral-400 hover:text-neutral-900 dark:text-stone-500 dark:hover:text-stone-100'
               }`}
             >
               {link.name}
             </Link>
           ))}
-          <div className="flex items-center space-x-5 pt-4 border-t border-neutral-200">
+          <div className="flex items-center space-x-5 pt-4 border-t border-neutral-200 dark:border-stone-800">
             <a
               href="https://github.com/mttio"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-neutral-500 hover:text-neutral-900 transition-colors"
+              className="text-neutral-400 hover:text-neutral-900 dark:text-stone-500 dark:hover:text-stone-100 transition-colors"
             >
-              <Github size={20} />
+              <Github size={18} />
             </a>
             <a
               href="https://www.linkedin.com/in/matteo-berga-7332a52a6/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-neutral-500 hover:text-neutral-900 transition-colors"
+              className="text-neutral-400 hover:text-neutral-900 dark:text-stone-500 dark:hover:text-stone-100 transition-colors"
             >
-              <Linkedin size={20} />
+              <Linkedin size={18} />
             </a>
             <a
               href="https://www.instagram.com/mtt_brg/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-neutral-500 hover:text-neutral-900 transition-colors"
+              className="text-neutral-400 hover:text-neutral-900 dark:text-stone-500 dark:hover:text-stone-100 transition-colors"
             >
-              <Camera size={20} />
+              <Camera size={18} />
             </a>
             <a
               href="https://www.strava.com/athletes/118901811"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-neutral-500 hover:text-neutral-900 transition-colors"
+              className="text-neutral-400 hover:text-neutral-900 dark:text-stone-500 dark:hover:text-stone-100 transition-colors"
             >
-              <Activity size={20} />
+              <Activity size={18} />
             </a>
             <a
               href="https://www.youtube.com/@matteoberga"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-neutral-500 hover:text-neutral-900 transition-colors"
+              className="text-neutral-400 hover:text-neutral-900 dark:text-stone-500 dark:hover:text-stone-100 transition-colors"
             >
-              <Youtube size={20} />
+              <Youtube size={18} />
             </a>
           </div>
         </div>
@@ -221,3 +240,5 @@ export const Navbar: React.FC = () => {
     </nav>
   );
 };
+
+

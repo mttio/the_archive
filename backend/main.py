@@ -1,19 +1,28 @@
-from fastapi import FastAPI, HTTPException, status, Header, Depends
+from fastapi import FastAPI, HTTPException, status, Header, Depends, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 from typing import List, Optional
 import sqlite3
 import os
 import re
+import uuid
+import io
+from PIL import Image
 
 from database import init_db, get_db_connection, create_contact_message, get_contact_messages, delete_contact_message
 
 app = FastAPI(title="Matteo Berga Portfolio API")
 
 # Setup CORS
+allowed_origins = ["http://localhost:5174", "http://127.0.0.1:5174", "http://localhost:5173", "http://127.0.0.1:5173"]
+env_origins = os.getenv("ALLOWED_ORIGINS")
+if env_origins:
+    allowed_origins.extend([o.strip() for o in env_origins.split(",") if o.strip()])
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5174", "http://127.0.0.1:5174"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -397,3 +406,99 @@ def delete_msg(message_id: int, authorized: bool = Depends(check_admin_passphras
         return {"status": "deleted", "id": message_id}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+# Image Upload and Serving Endpoints
+@app.post("/api/admin/images/upload")
+async def upload_image(file: UploadFile = File(...), authorized: bool = Depends(check_admin_passphrase)):
+    # 1. Validate file is an image
+    if not file.content_type or not file.content_type.startswith("image/"):
+        raise HTTPException(status_code=400, detail="Uploaded file must be an image.")
+        
+    try:
+        # 2. Read image content
+        contents = await file.read()
+        image = Image.open(io.BytesIO(contents))
+        original_width, original_height = image.size
+        
+        # 3. Create upload directory
+        uploads_dir = os.path.join(os.path.dirname(__file__), "uploads")
+        os.makedirs(uploads_dir, exist_ok=True)
+        
+        image_id = str(uuid.uuid4())
+        
+        # 4. Save original image as WebP
+        original_path = os.path.join(uploads_dir, f"{image_id}_original.webp")
+        if image.mode in ("RGBA", "LA") or (image.mode == "P" and "transparency" in image.info):
+            image.save(original_path, format="WEBP", quality=90, lossless=False)
+        else:
+            image.save(original_path, format="WEBP", quality=90)
+            
+        # 5. Generate resized WebP versions (XL: 1920, LG: 1280, MD: 768, SM: 480)
+        breakpoints = {
+            "1920": 1920,
+            "1280": 1280,
+            "768": 768,
+            "480": 480
+        }
+        
+        for size_name, max_width in breakpoints.items():
+            if original_width > max_width:
+                # Calculate scale maintaining aspect ratio
+                new_height = int((max_width / original_width) * original_height)
+                resized_image = image.resize((max_width, new_height), Image.Resampling.LANCZOS)
+                resized_path = os.path.join(uploads_dir, f"{image_id}_{size_name}.webp")
+                
+                if resized_image.mode in ("RGBA", "LA") or (resized_image.mode == "P" and "transparency" in resized_image.info):
+                    resized_image.save(resized_path, format="WEBP", quality=85, lossless=False)
+                else:
+                    resized_image.save(resized_path, format="WEBP", quality=85)
+                    
+        # 6. Save image metadata in DB
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT INTO images (id, filename, mime_type, width, height)
+            VALUES (?, ?, ?, ?, ?)
+        """, (image_id, file.filename, "image/webp", original_width, original_height))
+        conn.commit()
+        conn.close()
+        
+        return {
+            "id": image_id,
+            "url": f"http://localhost:8000/api/images/{image_id}"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Image upload and processing failed: {str(e)}")
+
+def serve_image(image_id: str, size: str):
+    # Map sizing names
+    size_map = {
+        "xl": "1920",
+        "lg": "1280",
+        "md": "768",
+        "sm": "480",
+        "original": "original"
+    }
+    
+    target_size = size_map.get(size.lower(), size)
+    uploads_dir = os.path.join(os.path.dirname(__file__), "uploads")
+    
+    # 1. Check if the target size file exists
+    target_path = os.path.join(uploads_dir, f"{image_id}_{target_size}.webp")
+    if os.path.exists(target_path):
+        return FileResponse(target_path, media_type="image/webp")
+        
+    # 2. Check if original exists as fallback
+    original_path = os.path.join(uploads_dir, f"{image_id}_original.webp")
+    if os.path.exists(original_path):
+        return FileResponse(original_path, media_type="image/webp")
+        
+    raise HTTPException(status_code=404, detail="Image file not found on disk.")
+
+@app.get("/api/images/{image_id}/{size}")
+def serve_image_with_size(image_id: str, size: str):
+    return serve_image(image_id, size)
+
+@app.get("/api/images/{image_id}")
+def serve_image_default(image_id: str):
+    return serve_image(image_id, "original")

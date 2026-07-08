@@ -11,7 +11,7 @@ import { FullPageEditor } from './pages/FullPageEditor';
 function App() {
   return (
     <Router>
-      <div className="flex min-h-screen flex-col bg-stone-50 font-sans text-neutral-800">
+      <div className="flex min-h-screen flex-col bg-stone-50 font-sans text-neutral-800 transition-colors duration-300 dark:bg-stone-950 dark:text-stone-200">
         {/* Navigation */}
         <Navbar />
 

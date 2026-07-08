@@ -166,7 +166,41 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
-def init_db():
+def init_db(force_reset: bool = False):
+    uploads_dir = os.path.join(os.path.dirname(__file__), "uploads")
+    os.makedirs(uploads_dir, exist_ok=True)
+    
+    db_exists = os.path.exists(DB_PATH)
+    needs_init = not db_exists or force_reset
+    
+    if not needs_init:
+        # Check if works table already exists
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='works'")
+            if not cursor.fetchone():
+                needs_init = True
+        except Exception:
+            needs_init = True
+        finally:
+            conn.close()
+
+    if not needs_init:
+        print("Database already initialized. Skipping reset.")
+        return
+
+    print("Initializing database...")
+    
+    # Clean up uploads directory on force reset or fresh init
+    for f in os.listdir(uploads_dir):
+        file_path = os.path.join(uploads_dir, f)
+        try:
+            if os.path.isfile(file_path):
+                os.unlink(file_path)
+        except Exception as e:
+            print(f"Error deleting file {file_path}: {e}")
+
     conn = get_db_connection()
     cursor = conn.cursor()
     
@@ -178,9 +212,21 @@ def init_db():
     cursor.execute("DROP TABLE IF EXISTS tags")
     cursor.execute("DROP TABLE IF EXISTS works")
     cursor.execute("DROP TABLE IF EXISTS contact_messages")
+    cursor.execute("DROP TABLE IF EXISTS images")
     conn.commit()
     
     # Create tables
+    cursor.execute("""
+    CREATE TABLE images (
+        id TEXT PRIMARY KEY,
+        filename TEXT NOT NULL,
+        mime_type TEXT NOT NULL,
+        width INTEGER,
+        height INTEGER,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+    """)
+
     cursor.execute("""
     CREATE TABLE works (
         id TEXT PRIMARY KEY,
@@ -289,5 +335,5 @@ def delete_contact_message(message_id: int):
     conn.close()
 
 if __name__ == "__main__":
-    init_db()
-    print("Database initialized successfully.")
+    init_db(force_reset=True)
+    print("Database reset and initialized successfully.")

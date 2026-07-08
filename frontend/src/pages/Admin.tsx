@@ -196,7 +196,7 @@ export const Admin: React.FC = () => {
   const renderTable = (items: WorkItem[], emptyMessage: string) => {
     if (items.length === 0) {
       return (
-        <div className="text-center py-10 text-neutral-400 italic font-sans text-sm border border-dashed border-neutral-200 bg-stone-50/20">
+        <div className="text-center py-10 text-neutral-400 dark:text-stone-550 italic font-sans text-sm border border-dashed border-neutral-200 dark:border-stone-800 bg-stone-50/20 dark:bg-stone-900/10">
           {emptyMessage}
         </div>
       );
@@ -205,25 +205,25 @@ export const Admin: React.FC = () => {
     return (
       <div className="space-y-4">
         {/* Mobile View - stacked list of cards */}
-        <div className="sm:hidden divide-y divide-neutral-100">
+        <div className="sm:hidden divide-y divide-neutral-100 dark:divide-stone-800">
           {items.map((item) => (
             <div key={item.id} className="py-4 first:pt-0 last:pb-0 space-y-3">
               <div className="flex items-start justify-between gap-3">
                 <div className="space-y-0.5">
-                  <h4 className="font-serif text-base font-normal text-neutral-900 leading-tight">
+                  <h4 className="font-sans font-extrabold uppercase text-xs sm:text-sm text-neutral-900 dark:text-stone-100 leading-tight">
                     {item.draft ? (
                       item.title
                     ) : (
-                      <Link to={`/work/${item.id}`} className="hover:underline hover:text-neutral-700 decoration-none">
+                      <Link to={`/work/${item.id}`} className="hover:underline hover:text-neutral-700 dark:hover:text-stone-300 decoration-none">
                         {item.title}
                       </Link>
                     )}
                   </h4>
-                  <span className="block text-[9px] text-neutral-400 font-mono">slug: {item.id}</span>
+                  <span className="block text-[9px] text-neutral-400 dark:text-stone-500 font-mono">slug: {item.id}</span>
                 </div>
                 <div>
                   {item.draft && (
-                    <span className="inline-block text-[8px] font-semibold uppercase tracking-wider text-neutral-500 bg-stone-100 border border-neutral-200/60 px-1.5 py-0.5 rounded-full font-sans">
+                    <span className="inline-block text-[8px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-stone-400 bg-stone-100 dark:bg-stone-900 border border-neutral-200/60 dark:border-stone-800 px-1.5 py-0.5 rounded-full font-sans">
                       Draft
                     </span>
                   )}
@@ -233,7 +233,7 @@ export const Admin: React.FC = () => {
               <div className="flex flex-wrap gap-1">
                 {item.tags && item.tags.length > 0 ? (
                   item.tags.map(t => (
-                    <span key={t.id} className="text-[8px] font-semibold uppercase tracking-wider rounded-full px-1.5 py-0.2 border border-neutral-200 bg-neutral-50 text-neutral-500">
+                    <span key={t.id} className="text-[8px] font-semibold uppercase tracking-wider rounded-full px-1.5 py-0.2 border border-neutral-200 dark:border-stone-800 bg-neutral-50 dark:bg-stone-950 text-neutral-500 dark:text-stone-400">
                       {t.name}
                     </span>
                   ))
@@ -247,7 +247,7 @@ export const Admin: React.FC = () => {
                 <div className="flex items-center space-x-2">
                   <Link
                     to={`/admin/edit/${item.id}`}
-                    className="flex items-center space-x-1.5 border border-neutral-200 bg-white px-2.5 py-1 text-[10px] font-semibold text-neutral-700 hover:text-neutral-900 transition-colors cursor-pointer rounded-none decoration-none"
+                    className="flex items-center space-x-1.5 border border-neutral-200 dark:border-stone-800 bg-white dark:bg-stone-900 px-2.5 py-1 text-[10px] font-semibold text-neutral-700 dark:text-stone-300 hover:text-neutral-900 dark:hover:text-stone-100 transition-colors cursor-pointer rounded-none decoration-none"
                     title="Edit item"
                   >
                     <Edit2 size={10} />
@@ -255,7 +255,7 @@ export const Admin: React.FC = () => {
                   </Link>
                   <button
                     onClick={() => handleDelete(item.id)}
-                    className="flex items-center space-x-1.5 border border-rose-200 bg-rose-50/50 px-2.5 py-1 text-[10px] font-semibold text-rose-700 hover:bg-rose-100/50 transition-colors cursor-pointer rounded-none"
+                    className="flex items-center space-x-1.5 border border-rose-200 dark:border-rose-950/60 bg-rose-50/50 dark:bg-rose-950/20 px-2.5 py-1 text-[10px] font-semibold text-rose-700 dark:text-rose-450 hover:bg-rose-100/50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer rounded-none"
                     title="Delete item"
                   >
                     <Trash2 size={10} />
@@ -271,39 +271,39 @@ export const Admin: React.FC = () => {
         <div className="hidden sm:block overflow-x-auto">
           <table className="w-full min-w-[600px] text-sm text-left border-collapse">
             <thead>
-              <tr className="border-b border-neutral-200 text-neutral-400 uppercase text-[10px] tracking-wider font-semibold">
+              <tr className="border-b border-neutral-200 dark:border-stone-800 text-neutral-400 dark:text-stone-500 uppercase text-[10px] tracking-wider font-semibold">
                 <th className="py-3 px-4 font-sans">Title</th>
                 <th className="py-3 px-4 font-sans">Timeline</th>
                 <th className="py-3 px-4 font-sans">Tags</th>
                 <th className="py-3 px-4 text-right font-sans">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-100">
+            <tbody className="divide-y divide-neutral-100 dark:divide-stone-800">
               {items.map((item) => (
-                <tr key={item.id} className="hover:bg-neutral-50/50 transition-colors group">
-                  <td className="py-3 px-4 font-medium text-neutral-900">
+                <tr key={item.id} className="hover:bg-neutral-50/50 dark:hover:bg-stone-900/40 transition-colors group">
+                  <td className="py-3 px-4 font-sans font-extrabold uppercase text-sm text-neutral-900 dark:text-stone-100">
                     <div className="flex items-center space-x-2">
                       {item.draft ? (
                         <span>{item.title}</span>
                       ) : (
-                        <Link to={`/work/${item.id}`} className="hover:underline hover:text-neutral-700 decoration-none">
+                        <Link to={`/work/${item.id}`} className="hover:underline hover:text-neutral-700 dark:hover:text-stone-300 decoration-none">
                           {item.title}
                         </Link>
                       )}
                       {item.draft && (
-                        <span className="inline-block text-[8px] font-semibold uppercase tracking-wider text-neutral-500 bg-stone-100 border border-neutral-200 px-1.5 py-0.2 rounded-full font-sans">
+                        <span className="inline-block text-[8px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-stone-400 bg-stone-100 dark:bg-stone-900 border border-neutral-200 dark:border-stone-800 px-1.5 py-0.2 rounded-full font-sans">
                           Draft
                         </span>
                       )}
                     </div>
-                    <span className="block text-[10px] text-neutral-400 font-mono mt-0.5">slug: {item.id}</span>
+                    <span className="block text-[10px] text-neutral-400 dark:text-stone-500 font-mono mt-0.5">slug: {item.id}</span>
                   </td>
                   <td className="py-3 px-4 text-xs text-neutral-500">{formatDateForDisplay(item.date) || '—'}</td>
                   <td className="py-3 px-4">
                     <div className="flex flex-wrap gap-1">
                       {item.tags && item.tags.length > 0 ? (
                         item.tags.map(t => (
-                          <span key={t.id} className="text-[9px] font-semibold uppercase tracking-wider rounded-full px-1.5 py-0.2 border border-neutral-200 bg-neutral-50 text-neutral-500">
+                          <span key={t.id} className="text-[9px] font-semibold uppercase tracking-wider rounded-full px-1.5 py-0.2 border border-neutral-200 dark:border-stone-800 bg-neutral-50 dark:bg-stone-950 text-neutral-500 dark:text-stone-400">
                             {t.name}
                           </span>
                         ))
@@ -316,14 +316,14 @@ export const Admin: React.FC = () => {
                     <div className="flex items-center justify-end space-x-2">
                       <Link
                         to={`/admin/edit/${item.id}`}
-                        className="p-1.5 text-neutral-500 hover:text-neutral-900 border border-transparent hover:border-neutral-200 hover:bg-white transition-colors cursor-pointer rounded-none"
+                        className="p-1.5 text-neutral-500 dark:text-stone-400 hover:text-neutral-900 dark:hover:text-stone-100 border border-transparent hover:border-neutral-200 dark:hover:border-stone-800 hover:bg-white dark:hover:bg-stone-900 transition-colors cursor-pointer rounded-none"
                         title="Edit item"
                       >
                         <Edit2 size={14} />
                       </Link>
                       <button
                         onClick={() => handleDelete(item.id)}
-                        className="p-1.5 text-neutral-400 hover:text-rose-600 border border-transparent hover:border-rose-100 hover:bg-rose-50/50 transition-colors cursor-pointer rounded-none"
+                        className="p-1.5 text-neutral-400 dark:text-stone-500 hover:text-rose-600 dark:hover:text-rose-400 border border-transparent hover:border-rose-100 dark:hover:border-rose-950/40 hover:bg-rose-50/50 dark:hover:bg-rose-950/20 transition-colors cursor-pointer rounded-none"
                         title="Delete item"
                       >
                         <Trash2 size={14} />
@@ -343,10 +343,10 @@ export const Admin: React.FC = () => {
   if (!isAuthenticated) {
     return (
       <div className="flex min-h-[70vh] items-center justify-center py-12 px-6">
-        <div className="w-full max-w-md border border-neutral-200 bg-white p-8 rounded-none shadow-sm space-y-6 text-left">
+        <div className="w-full max-w-md border border-neutral-200 dark:border-stone-800 bg-white dark:bg-stone-900 p-8 rounded-none shadow-sm space-y-6 text-left">
           <div className="space-y-2">
-            <h1 className="font-serif text-3xl font-bold text-neutral-900 tracking-tight">Admin Portal</h1>
-            <p className="text-sm text-neutral-500 font-sans">
+            <h1 className="font-sans font-extrabold uppercase text-3xl text-neutral-900 dark:text-stone-100 tracking-tight">Admin Portal</h1>
+            <p className="text-sm text-neutral-500 dark:text-stone-400 font-sans">
               Enter secret passphrase to access portfolio console database.
             </p>
           </div>
@@ -359,7 +359,7 @@ export const Admin: React.FC = () => {
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
-              <label htmlFor="passphrase" className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">
+              <label htmlFor="passphrase" className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 dark:text-stone-500">
                 Passphrase
               </label>
               <input
@@ -368,14 +368,14 @@ export const Admin: React.FC = () => {
                 value={passphrase}
                 onChange={(e) => setPassphrase(e.target.value)}
                 required
-                className="w-full rounded-none border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-800 placeholder-neutral-400 focus:border-neutral-400 focus:outline-none focus:ring-0 transition-colors"
+                className="w-full rounded-none border border-neutral-200 dark:border-stone-800 bg-white dark:bg-stone-900 px-4 py-3 text-sm text-neutral-800 dark:text-stone-100 placeholder-neutral-400 dark:placeholder-stone-600 focus:border-neutral-400 dark:focus:border-stone-600 focus:outline-none focus:ring-0 transition-colors"
                 placeholder="••••••••••••"
               />
             </div>
 
             <button
               type="submit"
-              className="group flex w-full items-center justify-center space-x-2 rounded-none bg-neutral-900 px-6 py-3 text-sm font-semibold text-white hover:bg-neutral-800 transition-colors cursor-pointer"
+              className="group flex w-full items-center justify-center space-x-2 rounded-none bg-neutral-900 dark:bg-stone-200 px-6 py-3 text-sm font-semibold text-white dark:text-stone-950 hover:bg-neutral-800 dark:hover:bg-stone-300 transition-colors cursor-pointer"
             >
               <span>Unlock Console</span>
               <LogIn size={16} />
@@ -389,13 +389,13 @@ export const Admin: React.FC = () => {
   return (
     <div className="w-full py-12 md:py-20 space-y-10 text-left max-w-5xl mx-auto">
       {/* Console Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-neutral-200 pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-neutral-200 dark:border-stone-800 pb-6">
         <div>
-          <h1 className="font-serif text-3xl sm:text-4xl font-bold text-neutral-900 tracking-tight">
+          <h1 className="font-sans font-extrabold uppercase text-3xl sm:text-4xl text-neutral-900 dark:text-stone-100 tracking-tight">
             Control Console
           </h1>
-          <p className="text-xs text-neutral-500 font-mono mt-1">
-            Database Status: <span className={error ? 'text-rose-500 font-semibold' : 'text-emerald-600 font-semibold'}>
+          <p className="text-xs text-neutral-500 dark:text-stone-400 font-mono mt-1">
+            Database Status: <span className={error ? 'text-rose-500 font-semibold' : 'text-emerald-600 dark:text-emerald-500 font-semibold'}>
               {error ? 'API Offline (Mock Mode)' : 'Connected'}
             </span>
           </p>
@@ -404,7 +404,7 @@ export const Admin: React.FC = () => {
         <div className="flex items-center space-x-3">
           <button
             onClick={() => { refetch(); loadTags(); }}
-            className="flex items-center space-x-1.5 border border-neutral-200 bg-white px-3.5 py-2 text-xs font-semibold text-neutral-700 hover:text-neutral-900 hover:border-neutral-400 transition-colors cursor-pointer rounded-none"
+            className="flex items-center space-x-1.5 border border-neutral-800 dark:border-stone-850 bg-white dark:bg-stone-900 px-3.5 py-2 text-xs font-semibold text-neutral-700 dark:text-stone-300 hover:text-neutral-900 dark:hover:text-stone-100 hover:border-neutral-400 dark:hover:border-stone-600 transition-colors cursor-pointer rounded-none"
             title="Refresh database"
           >
             <RefreshCw size={14} className={loading || tagsLoading ? 'animate-spin' : ''} />
@@ -412,14 +412,14 @@ export const Admin: React.FC = () => {
           </button>
           <Link
             to="/admin/new"
-            className="flex items-center space-x-1.5 bg-neutral-900 px-4 py-2 text-xs font-semibold text-white hover:bg-neutral-800 transition-colors cursor-pointer rounded-none decoration-none"
+            className="flex items-center space-x-1.5 bg-neutral-900 dark:bg-stone-200 px-4 py-2 text-xs font-semibold text-white dark:text-stone-950 hover:bg-neutral-800 dark:hover:bg-stone-300 transition-colors cursor-pointer rounded-none decoration-none"
           >
             <Plus size={14} />
             <span>New Post</span>
           </Link>
           <button
             onClick={handleLogout}
-            className="border border-rose-200 bg-rose-50/50 px-3.5 py-2 text-xs font-semibold text-rose-700 hover:bg-rose-100/50 transition-colors cursor-pointer rounded-none"
+            className="border border-rose-200 dark:border-rose-950/60 bg-rose-50/50 dark:bg-rose-950/20 px-3.5 py-2 text-xs font-semibold text-rose-700 dark:text-rose-450 hover:bg-rose-100/50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer rounded-none"
           >
             Log Out
           </button>
@@ -429,10 +429,10 @@ export const Admin: React.FC = () => {
       {/* Works Database */}
       <div className="space-y-8">
         {/* Published Posts */}
-        <div className="border border-neutral-200 bg-white rounded-none p-6 sm:p-8">
-          <h3 className="font-serif text-xl font-normal text-neutral-900 border-b border-neutral-200/60 pb-3 mb-6 flex items-center justify-between">
+        <div className="border border-neutral-200 dark:border-stone-800 bg-white dark:bg-stone-900 rounded-none p-6 sm:p-8">
+          <h3 className="font-sans font-extrabold uppercase text-lg text-neutral-900 dark:text-stone-100 border-b border-neutral-200/60 dark:border-stone-800 pb-3 mb-6 flex items-center justify-between">
             <span>Published Posts</span>
-            <span className="text-xs font-sans font-normal text-neutral-400">({publishedWorks.length})</span>
+            <span className="text-xs font-sans font-normal text-neutral-400 dark:text-stone-500">({publishedWorks.length})</span>
           </h3>
           {loading ? (
             <div className="text-center py-10 text-neutral-500 font-sans">Loading database elements...</div>
@@ -442,10 +442,10 @@ export const Admin: React.FC = () => {
         </div>
 
         {/* Drafts */}
-        <div className="border border-neutral-200 bg-white rounded-none p-6 sm:p-8">
-          <h3 className="font-serif text-xl font-normal text-neutral-900 border-b border-neutral-200/60 pb-3 mb-6 flex items-center justify-between">
+        <div className="border border-neutral-200 dark:border-stone-800 bg-white dark:bg-stone-900 rounded-none p-6 sm:p-8">
+          <h3 className="font-sans font-extrabold uppercase text-lg text-neutral-900 dark:text-stone-100 border-b border-neutral-200/60 dark:border-stone-800 pb-3 mb-6 flex items-center justify-between">
             <span>Drafts</span>
-            <span className="text-xs font-sans font-normal text-neutral-400">({draftWorks.length})</span>
+            <span className="text-xs font-sans font-normal text-neutral-400 dark:text-stone-500">({draftWorks.length})</span>
           </h3>
           {loading ? (
             <div className="text-center py-10 text-neutral-500 font-sans">Loading database elements...</div>
@@ -456,15 +456,15 @@ export const Admin: React.FC = () => {
       </div>
 
       {/* Tag Manager Section */}
-      <div className="border border-neutral-200 bg-white rounded-none p-6 sm:p-8 space-y-6">
-        <h3 className="font-serif text-xl font-normal text-neutral-900 border-b border-neutral-200/60 pb-3 mb-6">
+      <div className="border border-neutral-200 dark:border-stone-800 bg-white dark:bg-stone-900 rounded-none p-6 sm:p-8 space-y-6">
+        <h3 className="font-sans font-extrabold uppercase text-lg text-neutral-900 dark:text-stone-100 border-b border-neutral-200/60 dark:border-stone-800 pb-3 mb-6">
           Tag Manager
         </h3>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
           {/* Create Tag Form */}
-          <div className="md:col-span-1 border border-neutral-200 p-5 space-y-4">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-700 pb-2 border-b border-neutral-100">Create New Tag</h4>
+          <div className="md:col-span-1 border border-neutral-200 dark:border-stone-800 p-5 space-y-4 bg-white dark:bg-stone-900/50">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-700 dark:text-stone-300 pb-2 border-b border-neutral-100 dark:border-stone-800">Create New Tag</h4>
             {tagFormError && (
               <div className="text-xs text-rose-600 bg-rose-50 border border-rose-100 p-3.5 rounded-none">
                 {tagFormError}
@@ -477,12 +477,12 @@ export const Admin: React.FC = () => {
               </div>
             )}
             <div className="space-y-2 text-left">
-              <label className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Tag Name</label>
+              <label className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 dark:text-stone-500">Tag Name</label>
               <input
                 type="text"
                 value={newTagName}
                 onChange={(e) => setNewTagName(e.target.value)}
-                className="w-full rounded-none border border-neutral-200 bg-white px-3 py-2 text-sm text-neutral-800 focus:border-neutral-400 focus:outline-none"
+                className="w-full rounded-none border border-neutral-200 dark:border-stone-800 bg-white dark:bg-stone-900 px-3 py-2 text-sm text-neutral-800 dark:text-stone-100 focus:border-neutral-400 dark:focus:border-stone-600 focus:outline-none"
                 placeholder="e.g. Next.js, Sketching"
               />
             </div>
@@ -490,7 +490,7 @@ export const Admin: React.FC = () => {
             <button
               type="button"
               onClick={handleCreateTag}
-              className="w-full flex items-center justify-center space-x-1.5 bg-neutral-900 px-4 py-2.5 text-xs font-semibold text-white hover:bg-neutral-800 transition-colors cursor-pointer rounded-none"
+              className="w-full flex items-center justify-center space-x-1.5 bg-neutral-900 dark:bg-stone-200 px-4 py-2.5 text-xs font-semibold text-white dark:text-stone-950 hover:bg-neutral-800 dark:hover:bg-stone-300 transition-colors cursor-pointer rounded-none"
             >
               <Plus size={12} />
               <span>Add Tag</span>
@@ -499,14 +499,14 @@ export const Admin: React.FC = () => {
           
           {/* List of existing tags */}
           <div className="md:col-span-2 space-y-4">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-700 pb-2 border-b border-neutral-100">Existing Tags ({tagsList.length})</h4>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-700 dark:text-stone-300 pb-2 border-b border-neutral-100 dark:border-stone-800">Existing Tags ({tagsList.length})</h4>
             {tagsLoading ? (
               <div className="text-center py-6 text-neutral-500 font-sans text-sm">Loading tags...</div>
             ) : tagsList.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {tagsList.map(tag => (
-                  <div key={tag.id} className="flex items-center justify-between p-3.5 border border-neutral-200 bg-stone-50/50">
-                    <span className="inline-block text-[10px] font-semibold uppercase tracking-wider rounded-full px-2.5 py-0.5 border border-neutral-200 bg-neutral-50 text-neutral-500">
+                  <div key={tag.id} className="flex items-center justify-between p-3.5 border border-neutral-200 dark:border-stone-800 bg-stone-50/50 dark:bg-stone-900/40">
+                    <span className="inline-block text-[10px] font-semibold uppercase tracking-wider rounded-full px-2.5 py-0.5 border border-neutral-200 dark:border-stone-800 bg-neutral-50 dark:bg-stone-900/80 text-neutral-500 dark:text-stone-400">
                       {tag.name}
                     </span>
                     <button
@@ -527,8 +527,8 @@ export const Admin: React.FC = () => {
       </div>
 
       {/* Contact Inbox Section */}
-      <div className="border border-neutral-200 bg-white rounded-none p-6 sm:p-8 space-y-6">
-        <h3 className="font-serif text-xl font-normal text-neutral-900 border-b border-neutral-200/60 pb-3 mb-6">
+      <div className="border border-neutral-200 dark:border-stone-800 bg-white dark:bg-stone-900 rounded-none p-6 sm:p-8 space-y-6">
+        <h3 className="font-sans font-extrabold uppercase text-lg text-neutral-900 dark:text-stone-100 border-b border-neutral-200/60 dark:border-stone-800 pb-3 mb-6">
           Contact Inbox
         </h3>
         
@@ -538,7 +538,7 @@ export const Admin: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-left text-sm font-sans">
               <thead>
-                <tr className="border-b border-neutral-200 text-[10px] font-bold uppercase tracking-wider text-neutral-400">
+                <tr className="border-b border-neutral-200 dark:border-stone-800 text-[10px] font-bold uppercase tracking-wider text-neutral-400 dark:text-stone-500">
                   <th className="pb-3 pr-4 font-bold">Date</th>
                   <th className="pb-3 px-4 font-bold">Sender</th>
                   <th className="pb-3 px-4 font-bold">Topic</th>
@@ -546,9 +546,9 @@ export const Admin: React.FC = () => {
                   <th className="pb-3 pl-4 font-bold text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-neutral-100">
+              <tbody className="divide-y divide-neutral-100 dark:divide-stone-800">
                 {messagesList.map((msg) => (
-                  <tr key={msg.id} className="hover:bg-neutral-50/50 transition-colors">
+                  <tr key={msg.id} className="hover:bg-neutral-50/50 dark:hover:bg-stone-900/40 transition-colors">
                     <td className="py-4 pr-4 text-xs text-neutral-500 whitespace-nowrap align-top">
                       {new Date(msg.created_at + 'Z').toLocaleString('en-US', {
                         month: 'short',
@@ -558,15 +558,15 @@ export const Admin: React.FC = () => {
                       })}
                     </td>
                     <td className="py-4 px-4 align-top">
-                      <div className="font-semibold text-neutral-800">{msg.name}</div>
-                      <a href={`mailto:${msg.email}`} className="text-xs text-neutral-400 hover:underline">{msg.email}</a>
+                      <div className="font-semibold text-neutral-800 dark:text-stone-200">{msg.name}</div>
+                      <a href={`mailto:${msg.email}`} className="text-xs text-neutral-400 dark:text-stone-500 hover:underline">{msg.email}</a>
                     </td>
                     <td className="py-4 px-4 align-top">
-                      <span className="inline-block text-[10px] font-semibold uppercase tracking-wider rounded-full px-2 py-0.5 border border-neutral-200 bg-neutral-50 text-neutral-500">
+                      <span className="inline-block text-[10px] font-semibold uppercase tracking-wider rounded-full px-2 py-0.5 border border-neutral-200 dark:border-stone-800 bg-neutral-50 dark:bg-stone-900/80 text-neutral-500 dark:text-stone-400">
                         {msg.subject}
                       </span>
                     </td>
-                    <td className="py-4 px-4 text-neutral-600 leading-relaxed break-words align-top text-xs whitespace-pre-wrap">
+                    <td className="py-4 px-4 text-neutral-600 dark:text-stone-300 leading-relaxed break-words align-top text-xs whitespace-pre-wrap">
                       {msg.message}
                     </td>
                     <td className="py-4 pl-4 text-right align-top">

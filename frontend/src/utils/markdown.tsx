@@ -1,5 +1,7 @@
 import React from 'react';
 import { WorkCarousel } from '../components/WorkCarousel';
+import { getResponsiveImageProps } from './responsiveImage';
+
 
 // Parses inline Markdown styles: Bold, Italic, Inline Code, and Link hrefs
 function parseInline(text: string): React.ReactNode[] {
@@ -10,7 +12,7 @@ function parseInline(text: string): React.ReactNode[] {
     if (typeof p !== 'string') return p;
     const split = p.split(/\*\*(.*?)\*\*/g);
     return split.map((chunk, idx) => 
-      idx % 2 === 1 ? <strong key={idx} className="font-bold text-neutral-900">{chunk}</strong> : chunk
+      idx % 2 === 1 ? <strong key={idx} className="font-bold text-neutral-900 dark:text-stone-100">{chunk}</strong> : chunk
     );
   });
 
@@ -28,7 +30,7 @@ function parseInline(text: string): React.ReactNode[] {
     if (typeof p !== 'string') return p;
     const split = p.split(/`(.*?)`/g);
     return split.map((chunk, idx) => 
-      idx % 2 === 1 ? <code key={idx} className="bg-stone-100 text-neutral-800 px-1 py-0.5 text-[11px] font-mono">{chunk}</code> : chunk
+      idx % 2 === 1 ? <code key={idx} className="bg-stone-100 text-neutral-800 dark:bg-stone-900 dark:text-stone-200 px-1 py-0.5 text-[11px] font-mono">{chunk}</code> : chunk
     );
   });
 
@@ -52,7 +54,7 @@ function parseInline(text: string): React.ReactNode[] {
           href={linkUrl} 
           target="_blank" 
           rel="noopener noreferrer" 
-          className="underline hover:text-neutral-600 transition-colors"
+          className="underline hover:text-neutral-600 dark:hover:text-stone-400 transition-colors"
         >
           {linkText}
         </a>
@@ -90,13 +92,13 @@ export function parseMarkdownToReact(text: string): React.ReactNode {
       
       if (currentListType === 'bullet') {
         elements.push(
-          <ul key={`list-${keyIdx++}`} className="list-disc pl-5 my-4 space-y-2 text-neutral-600 font-sans">
+          <ul key={`list-${keyIdx++}`} className="list-disc pl-5 my-4 space-y-2 text-neutral-600 dark:text-stone-400 font-sans">
             {itemsReact}
           </ul>
         );
       } else {
         elements.push(
-          <ol key={`list-${keyIdx++}`} className="list-decimal pl-5 my-4 space-y-2 text-neutral-600 font-sans">
+          <ol key={`list-${keyIdx++}`} className="list-decimal pl-5 my-4 space-y-2 text-neutral-600 dark:text-stone-400 font-sans">
             {itemsReact}
           </ol>
         );
@@ -141,19 +143,13 @@ export function parseMarkdownToReact(text: string): React.ReactNode {
         }
 
         if (type === 'image') {
-          const layout = params['layout'] || 'center';
           const caption = params['caption'] || '';
           
-          let layoutClass = 'max-w-2xl mx-auto my-8'; 
-          if (layout === 'wide') {
-            layoutClass = '-mx-4 sm:-mx-8 md:-mx-12 lg:-mx-16 my-10 max-w-[110%] w-[110%]';
-          } else if (layout === 'full') {
-            layoutClass = '-mx-6 lg:-mx-8 my-12 w-screen max-w-none relative left-1/2 -translate-x-1/2';
-          }
+          let layoutClass = 'w-full my-8';
 
           elements.push(
             <figure key={`media-${keyIdx++}`} className={`${layoutClass} overflow-hidden`}>
-              <img src={mainVal} alt={caption || 'Article image'} className="w-full h-auto object-cover max-h-[600px]" />
+              <img {...getResponsiveImageProps(mainVal, "(max-width: 768px) 100vw, 768px")} alt={caption || 'Article image'} className="w-auto max-w-full h-auto max-h-[600px] mx-auto block" />
               {caption && (
                 <figcaption className="text-center text-xs text-neutral-400 font-sans mt-3 px-4 italic">
                   {caption}
@@ -177,11 +173,11 @@ export function parseMarkdownToReact(text: string): React.ReactNode {
           const gridCols = urls.length === 2 ? 'grid-cols-2' : 'grid-cols-2 md:grid-cols-3';
           
           elements.push(
-            <div key={`media-${keyIdx++}`} className="my-8 space-y-3 max-w-3xl mx-auto">
+            <div key={`media-${keyIdx++}`} className="my-8 space-y-3 w-full">
               <div className={`grid gap-4 ${gridCols}`}>
                 {urls.map((url, uIdx) => (
-                  <div key={uIdx} className="aspect-[4/3] bg-neutral-100 overflow-hidden">
-                    <img src={url} alt={`Collage item ${uIdx + 1}`} className="w-full h-full object-cover" />
+                  <div key={uIdx} className="bg-neutral-100 dark:bg-stone-900 overflow-hidden flex items-center justify-center">
+                    <img {...getResponsiveImageProps(url, urls.length === 2 ? "(max-width: 768px) 100vw, 384px" : "(max-width: 768px) 100vw, 256px")} alt={`Collage item ${uIdx + 1}`} className="w-full h-auto block" />
                   </div>
                 ))}
               </div>
@@ -199,7 +195,7 @@ export function parseMarkdownToReact(text: string): React.ReactNode {
     if (trimmed.startsWith('## ')) {
       flushList();
       elements.push(
-        <h2 key={`h2-${keyIdx++}`} className="font-serif text-2xl font-bold text-neutral-900 mt-10 mb-4 tracking-tight">
+        <h2 key={`h2-${keyIdx++}`} className="font-sans font-extrabold uppercase text-xl sm:text-2xl text-neutral-900 dark:text-stone-100 mt-10 mb-4 tracking-tight">
           {parseInline(trimmed.substring(3))}
         </h2>
       );
@@ -209,7 +205,7 @@ export function parseMarkdownToReact(text: string): React.ReactNode {
     if (trimmed.startsWith('### ')) {
       flushList();
       elements.push(
-        <h3 key={`h3-${keyIdx++}`} className="font-serif text-xl font-bold text-neutral-900 mt-8 mb-4 tracking-tight">
+        <h3 key={`h3-${keyIdx++}`} className="font-sans font-extrabold uppercase text-lg sm:text-xl text-neutral-900 dark:text-stone-100 mt-8 mb-4 tracking-tight">
           {parseInline(trimmed.substring(4))}
         </h3>
       );
@@ -240,7 +236,7 @@ export function parseMarkdownToReact(text: string): React.ReactNode {
     // Paragraph
     flushList();
     elements.push(
-      <p key={`p-${keyIdx++}`} className="text-neutral-700 leading-relaxed mb-5 text-base sm:text-lg font-sans">
+      <p key={`p-${keyIdx++}`} className="text-neutral-700 dark:text-stone-300 leading-relaxed mb-5 text-base sm:text-lg font-sans">
         {parseInline(trimmed)}
       </p>
     );

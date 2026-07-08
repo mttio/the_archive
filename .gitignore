@@ -26,3 +26,15 @@ frontend/dist-ssr
 
 # SQLite database file
 backend/database.db
+
+# Backend uploads
+backend/uploads/
+
+# Python cache & env
+**/__pycache__/
+*.pyc
+venv/
+.venv/
+env/
+.env
+.env.*.local

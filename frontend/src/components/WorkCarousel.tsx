@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { getResponsiveImageProps } from '../utils/responsiveImage';
 
 interface WorkCarouselProps {
   slides: { url: string; caption: string }[];
@@ -29,9 +30,9 @@ export const WorkCarousel: React.FC<WorkCarouselProps> = ({ slides }) => {
             }`}
           >
             <img
-              src={slide.url}
+              {...getResponsiveImageProps(slide.url, "(max-width: 768px) 100vw, 768px")}
               alt={slide.caption || `Slide ${index + 1}`}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain"
             />
             {slide.caption && (
               <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4 pt-12 text-white text-left z-20">
