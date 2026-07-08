@@ -223,7 +223,7 @@ export const Admin: React.FC = () => {
                 </div>
                 <div>
                   {item.draft && (
-                    <span className="inline-block text-[8px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-stone-400 bg-stone-100 dark:bg-stone-900 border border-neutral-200/60 dark:border-stone-800 px-1.5 py-0.5 rounded-full font-sans">
+                    <span className="inline-block text-[8px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400 bg-neutral-100 dark:bg-black border border-neutral-200 dark:border-neutral-800 px-1.5 py-0.5 rounded-full font-sans">
                       Draft
                     </span>
                   )}
@@ -233,7 +233,7 @@ export const Admin: React.FC = () => {
               <div className="flex flex-wrap gap-1">
                 {item.tags && item.tags.length > 0 ? (
                   item.tags.map(t => (
-                    <span key={t.id} className="text-[8px] font-semibold uppercase tracking-wider rounded-full px-1.5 py-0.2 border border-neutral-200 dark:border-stone-800 bg-neutral-50 dark:bg-stone-950 text-neutral-500 dark:text-stone-400">
+                    <span key={t.id} className="text-[8px] font-medium tracking-wider text-neutral-400 dark:text-neutral-500 uppercase font-sans mr-2">
                       {t.name}
                     </span>
                   ))
@@ -303,7 +303,7 @@ export const Admin: React.FC = () => {
                     <div className="flex flex-wrap gap-1">
                       {item.tags && item.tags.length > 0 ? (
                         item.tags.map(t => (
-                          <span key={t.id} className="text-[9px] font-semibold uppercase tracking-wider rounded-full px-1.5 py-0.2 border border-neutral-200 dark:border-stone-800 bg-neutral-50 dark:bg-stone-950 text-neutral-500 dark:text-stone-400">
+                          <span key={t.id} className="text-[9px] font-medium tracking-wider text-neutral-400 dark:text-neutral-500 uppercase font-sans mr-2">
                             {t.name}
                           </span>
                         ))
@@ -375,7 +375,7 @@ export const Admin: React.FC = () => {
 
             <button
               type="submit"
-              className="group flex w-full items-center justify-center space-x-2 rounded-none bg-neutral-900 dark:bg-stone-200 px-6 py-3 text-sm font-semibold text-white dark:text-stone-950 hover:bg-neutral-800 dark:hover:bg-stone-300 transition-colors cursor-pointer"
+              className="group flex w-full items-center justify-center space-x-2 rounded-none bg-neutral-900 dark:bg-white px-6 py-3 text-sm font-semibold text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors cursor-pointer"
             >
               <span>Unlock Console</span>
               <LogIn size={16} />
@@ -412,7 +412,7 @@ export const Admin: React.FC = () => {
           </button>
           <Link
             to="/admin/new"
-            className="flex items-center space-x-1.5 bg-neutral-900 dark:bg-stone-200 px-4 py-2 text-xs font-semibold text-white dark:text-stone-950 hover:bg-neutral-800 dark:hover:bg-stone-300 transition-colors cursor-pointer rounded-none decoration-none"
+            className="flex items-center space-x-1.5 bg-neutral-900 dark:bg-white px-4 py-2 text-xs font-semibold text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors cursor-pointer rounded-none decoration-none"
           >
             <Plus size={14} />
             <span>New Post</span>
@@ -490,7 +490,7 @@ export const Admin: React.FC = () => {
             <button
               type="button"
               onClick={handleCreateTag}
-              className="w-full flex items-center justify-center space-x-1.5 bg-neutral-900 dark:bg-stone-200 px-4 py-2.5 text-xs font-semibold text-white dark:text-stone-950 hover:bg-neutral-800 dark:hover:bg-stone-300 transition-colors cursor-pointer rounded-none"
+              className="w-full flex items-center justify-center space-x-1.5 bg-neutral-900 dark:bg-white px-4 py-2.5 text-xs font-semibold text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors cursor-pointer rounded-none"
             >
               <Plus size={12} />
               <span>Add Tag</span>

@@ -87,79 +87,78 @@ export const Contact: React.FC = () => {
   };
 
   return (
-    <div className="py-8 space-y-12 w-full text-left">
+    <div className="py-8 pb-2 space-y-12 w-full text-left">
       <section className="space-y-4 max-w-2xl">
-        <h1 className="font-sans font-black text-3xl sm:text-4xl lg:text-5xl tracking-tighter text-neutral-900 dark:text-stone-100 leading-[0.98] uppercase">
-          
+        <h1 className="font-sans font-light text-3xl sm:text-4xl lg:text-5xl tracking-widest text-black dark:text-white leading-tight uppercase">
           Let's have a good Cappuccino!
         </h1>
-        <p className="text-sm text-neutral-500 dark:text-stone-400 leading-relaxed font-sans font-light">
+        <p className="text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed font-sans font-light">
           Whether you want to discuss a project, commission an artwork, talk about sports, or just meet me, don't hesitate.
         </p>
       </section>
 
-      <section className="grid grid-cols-1 md:grid-cols-5 gap-12 pt-6 editorial-border-t">
+      <section className="grid grid-cols-1 md:grid-cols-5 gap-12 pt-6">
         {/* Contact Info Sidebar */}
         <div className="md:col-span-2 space-y-8">
           <div className="space-y-4">
-            <h3 className="font-sans font-extrabold text-sm uppercase tracking-wider text-neutral-900 dark:text-stone-100">Direct Connect</h3>
-            <div className="flex items-center space-x-3 text-neutral-500 dark:text-stone-500 hover:text-neutral-900 dark:hover:text-stone-100 transition-colors duration-200">
+            <h3 className="font-sans font-light text-sm uppercase tracking-widest text-black dark:text-white">Direct Connect</h3>
+            <div className="flex items-center space-x-3 text-neutral-500 dark:text-neutral-500 hover:text-black dark:hover:text-white transition-colors duration-200">
               <Mail size={14} className="text-neutral-400" />
-              <a href="mailto:mtt.berga@gmail.com" className="text-xs font-semibold tracking-wider">mtt.berga@gmail.com</a>
+              <a href="mailto:mtt.berga@gmail.com" className="text-xs font-light tracking-widest">mtt.berga@gmail.com</a>
             </div>
           </div>
 
           <div className="space-y-4">
-            <h3 className="font-sans font-extrabold text-sm uppercase tracking-wider text-neutral-900 dark:text-stone-100">Elsewhere</h3>
+            <h3 className="font-sans font-light text-sm uppercase tracking-widest text-black dark:text-white">Elsewhere</h3>
             <div className="space-y-3 font-sans">
               <a
                 href="https://github.com/mttio"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center space-x-3 text-neutral-400 dark:text-stone-500 hover:text-neutral-900 dark:hover:text-stone-100 transition-colors text-xs font-light"
+                className="flex items-center space-x-3 text-neutral-400 dark:text-neutral-500 hover:text-black dark:hover:text-white transition-colors text-xs font-light"
               >
                 <Github size={14} />
-                <span>GitHub &bull; Code archives</span>
+                <span>GitHub — Code archives</span>
               </a>
               
               <a
                 href="https://www.linkedin.com/in/matteo-berga-7332a52a6/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center space-x-3 text-neutral-400 dark:text-stone-500 hover:text-neutral-900 dark:hover:text-stone-100 transition-colors text-xs font-light"
+                className="flex items-center space-x-3 text-neutral-400 dark:text-neutral-500 hover:text-black dark:hover:text-white transition-colors text-xs font-light"
               >
                 <Linkedin size={14} />
-                <span>LinkedIn &bull; Professional updates</span>
+                <span>LinkedIn — Professional updates</span>
               </a>
               
               <a
                 href="https://www.instagram.com/mtt_brg/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center space-x-3 text-neutral-400 dark:text-stone-500 hover:text-neutral-900 dark:hover:text-stone-100 transition-colors text-xs font-light"
+                className="flex items-center space-x-3 text-neutral-400 dark:text-neutral-500 hover:text-black dark:hover:text-white transition-colors text-xs font-light"
               >
                 <Camera size={14} />
-                <span>Instagram &bull; Art Portfolio</span>
+                <span>Instagram — Art Portfolio</span>
               </a>
               
               <a
                 href="https://www.strava.com/athletes/118901811"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center space-x-3 text-neutral-400 dark:text-stone-500 hover:text-neutral-900 dark:hover:text-stone-100 transition-colors text-xs font-light"
+                className="flex items-center space-x-3 text-neutral-400 dark:text-neutral-500 hover:text-black dark:hover:text-white transition-colors text-xs font-light"
               >
                 <Activity size={14} />
-                <span>Strava &bull; Running logs</span>
+                <span>Strava — Running logs</span>
               </a>
 
               <a
                 href="https://www.youtube.com/@matteoberga"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center space-x-3 text-neutral-400 dark:text-stone-500 hover:text-neutral-900 dark:hover:text-stone-100 transition-colors text-xs font-light"
+                className="flex items-center space-x-3 text-neutral-400 dark:text-neutral-500 hover:text-black dark:hover:text-white transition-colors text-xs font-light"
               >
                 <Youtube size={14} />
-                <span>YouTube &bull; Videography</span>
+                <span>YouTube — Videography</span>
               </a>
             </div>
           </div>
@@ -168,17 +167,17 @@ export const Contact: React.FC = () => {
         {/* Contact Form */}
         <div className="md:col-span-3">
           {formSubmitted ? (
-            <div className="rounded-none border border-neutral-300/80 bg-white dark:bg-stone-900 dark:border-stone-800 p-8 text-center space-y-4">
-              <div className="mx-auto p-3 rounded-none bg-stone-50 border border-neutral-300 text-neutral-800 dark:bg-stone-950 dark:border-stone-850 dark:text-stone-100 w-fit">
+            <div className="rounded-none border border-neutral-200 bg-white dark:bg-black dark:border-neutral-800 p-8 text-center space-y-4">
+              <div className="mx-auto p-3 rounded-none bg-neutral-50 border border-neutral-200 text-black dark:bg-neutral-950 dark:border-neutral-900 dark:text-white w-fit">
                 <CheckCircle size={28} />
               </div>
-              <h3 className="font-sans font-extrabold text-lg uppercase tracking-tight text-neutral-900 dark:text-stone-100">Message Transmitted</h3>
-              <p className="text-xs text-neutral-500 leading-relaxed font-sans max-w-sm mx-auto font-light">
+              <h3 className="font-sans font-light text-lg uppercase tracking-widest text-black dark:text-white">Message Transmitted</h3>
+              <p className="text-xs text-neutral-505 leading-relaxed font-sans max-w-sm mx-auto font-light">
                 Thank you for reaching out. I read every message and will get back to you within 24 to 48 hours.
               </p>
               <button
                 onClick={() => setFormSubmitted(false)}
-                className="mt-4 text-[10px] font-bold uppercase tracking-widest text-neutral-800 underline hover:text-neutral-500 cursor-pointer"
+                className="mt-4 text-[10px] font-light uppercase tracking-widest text-neutral-800 underline hover:text-neutral-500 cursor-pointer"
               >
                 Send another message
               </button>
@@ -187,7 +186,7 @@ export const Contact: React.FC = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label htmlFor="name" className="text-[8.5px] font-bold uppercase tracking-[0.2em] text-neutral-400 dark:text-stone-500 block">Name</label>
+                  <label htmlFor="name" className="text-[8.5px] font-light uppercase tracking-[0.2em] text-neutral-400 dark:text-stone-500 block">Name</label>
                   <input
                     type="text"
                     id="name"
@@ -195,12 +194,12 @@ export const Contact: React.FC = () => {
                     required
                     value={formData.name}
                     onChange={handleInputChange}
-                    className="w-full rounded-none border border-neutral-300 bg-white px-4 py-3 text-xs text-neutral-800 placeholder-neutral-400 focus:border-neutral-500 focus:outline-none focus:ring-0 transition-colors font-sans dark:border-stone-800 dark:bg-stone-900 dark:text-stone-100 dark:placeholder-stone-600 dark:focus:border-stone-600"
+                    className="w-full rounded-none border border-neutral-200 bg-white px-4 py-3 text-xs text-black placeholder-neutral-400 focus:border-black focus:outline-none focus:ring-0 transition-colors font-sans dark:border-neutral-800 dark:bg-black dark:text-white dark:placeholder-neutral-600 dark:focus:border-white"
                     placeholder="Jane Doe"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="email" className="text-[8.5px] font-bold uppercase tracking-[0.2em] text-neutral-400 block">Email Address</label>
+                  <label htmlFor="email" className="text-[8.5px] font-light uppercase tracking-[0.2em] text-neutral-400 block">Email Address</label>
                   <input
                     type="email"
                     id="email"
@@ -208,20 +207,20 @@ export const Contact: React.FC = () => {
                     required
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="w-full rounded-none border border-neutral-300 bg-white px-4 py-3 text-xs text-neutral-800 placeholder-neutral-400 focus:border-neutral-500 focus:outline-none focus:ring-0 transition-colors font-sans dark:border-stone-800 dark:bg-stone-900 dark:text-stone-100 dark:placeholder-stone-600 dark:focus:border-stone-600"
+                    className="w-full rounded-none border border-neutral-200 bg-white px-4 py-3 text-xs text-black placeholder-neutral-400 focus:border-black focus:outline-none focus:ring-0 transition-colors font-sans dark:border-neutral-800 dark:bg-black dark:text-white dark:placeholder-neutral-600 dark:focus:border-white"
                     placeholder="jane@example.com"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="subject" className="text-[8.5px] font-bold uppercase tracking-[0.2em] text-neutral-400 block">Topic of Interest</label>
+                <label htmlFor="subject" className="text-[8.5px] font-light uppercase tracking-[0.2em] text-neutral-400 block">Topic of Interest</label>
                 <select
                   id="subject"
                   name="subject"
                   value={formData.subject}
                   onChange={handleInputChange}
-                  className="w-full rounded-none border border-neutral-300 bg-white px-4 py-3 text-xs text-neutral-800 focus:border-neutral-500 focus:outline-none focus:ring-0 transition-colors font-sans dark:border-stone-800 dark:bg-stone-900 dark:text-stone-100 dark:focus:border-stone-600"
+                  className="w-full rounded-none border border-neutral-200 bg-white px-4 py-3 text-xs text-black focus:border-black focus:outline-none focus:ring-0 transition-colors font-sans dark:border-neutral-800 dark:bg-black dark:text-white dark:focus:border-white"
                 >
                   <option value="General Inquiry">Saying Hello</option>
                   <option value="Software Collaboration">Collaboration proposal</option>
@@ -230,7 +229,7 @@ export const Contact: React.FC = () => {
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="message" className="text-[8.5px] font-bold uppercase tracking-[0.2em] text-neutral-400 block">Message</label>
+                <label htmlFor="message" className="text-[8.5px] font-light uppercase tracking-[0.2em] text-neutral-400 block">Message</label>
                 <textarea
                   id="message"
                   name="message"
@@ -238,7 +237,7 @@ export const Contact: React.FC = () => {
                   rows={5}
                   value={formData.message}
                   onChange={handleInputChange}
-                  className="w-full rounded-none border border-neutral-300 bg-white px-4 py-3 text-xs text-neutral-800 placeholder-neutral-400 focus:border-neutral-500 focus:outline-none focus:ring-0 transition-colors resize-none font-sans dark:border-stone-800 dark:bg-stone-900 dark:text-stone-100 dark:placeholder-stone-600 dark:focus:border-stone-600"
+                  className="w-full rounded-none border border-neutral-200 bg-white px-4 py-3 text-xs text-black placeholder-neutral-400 focus:border-black focus:outline-none focus:ring-0 transition-colors resize-none font-sans dark:border-neutral-800 dark:bg-black dark:text-white dark:placeholder-neutral-600 dark:focus:border-white"
                   placeholder="Tell me about your thoughts or project..."
                 />
               </div>
@@ -252,15 +251,25 @@ export const Contact: React.FC = () => {
               <button
                 type="submit"
                 disabled={submitting}
-                className="group inline-flex items-center space-x-2 rounded-none bg-neutral-900 dark:bg-stone-200 px-6 py-3.5 text-[10px] font-bold uppercase tracking-[0.2em] text-white dark:text-stone-950 hover:bg-neutral-800 dark:hover:bg-stone-300 disabled:bg-neutral-400 disabled:cursor-not-allowed transition-colors cursor-pointer w-full sm:w-auto justify-center"
+                className="group inline-flex items-center space-x-2 rounded-none bg-black dark:bg-white px-6 py-3.5 text-[10px] font-light tracking-[0.2em] text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-200 disabled:bg-neutral-400 disabled:cursor-not-allowed transition-colors cursor-pointer w-full sm:w-auto justify-center"
               >
                 <span>{submitting ? 'Transmitting...' : 'Send Message'}</span>
-                <Send size={12} className="text-white transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                <Send size={12} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </button>
             </form>
           )}
         </div>
       </section>
+
+      {/* Typographic Index Signature */}
+      <div className="flex items-baseline justify-between w-full pb-2 select-none mt-12">
+        <span className="font-sans text-[60px] sm:text-[90px] md:text-[110px] font-light tracking-tighter leading-none text-black dark:text-white">
+          04
+        </span>
+        <span className="font-sans text-[60px] sm:text-[90px] md:text-[110px] font-light tracking-widest leading-none text-black dark:text-white uppercase text-right">
+          CONTACT
+        </span>
+      </div>
     </div>
   );
 };

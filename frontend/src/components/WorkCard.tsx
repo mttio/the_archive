@@ -5,7 +5,7 @@ import { getResponsiveImageProps } from '../utils/responsiveImage';
 
 interface WorkCardProps {
   item: WorkItem;
-  variant?: 'featured' | 'medium' | 'small' | 'sidebar';
+  variant?: 'featured' | 'medium' | 'small' | 'sidebar' | 'portrait';
 }
 
 const formatDateForDisplay = (dateStr: string): string => {
@@ -15,13 +15,13 @@ const formatDateForDisplay = (dateStr: string): string => {
     const [year, month, day] = dateStr.split('-');
     const date = new Date(Date.UTC(parseInt(year), parseInt(month) - 1, parseInt(day)));
     return date.toLocaleDateString('en-US', { 
-      month: 'short', 
-      day: 'numeric', 
+      day: 'numeric',
+      month: 'long', 
       year: 'numeric',
       timeZone: 'UTC'
-    }).toUpperCase();
+    });
   }
-  return dateStr.toUpperCase();
+  return dateStr;
 };
 
 export const WorkCard: React.FC<WorkCardProps> = ({ item, variant = 'medium' }) => {
@@ -30,25 +30,14 @@ export const WorkCard: React.FC<WorkCardProps> = ({ item, variant = 'medium' }) 
 
   // Metadata section rendering (Date / BY MATTEO BERGA / Tags)
   const renderMetadata = () => (
-    <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[9px] font-medium tracking-widest text-neutral-400 uppercase font-sans">
-      <span>{formattedDate}</span>
-      <span>/</span>
-      <span>BY MATTEO BERGA</span>
+    <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[9px] font-medium tracking-widest text-neutral-400 dark:text-neutral-500 uppercase font-sans">
       {item.tags && item.tags.length > 0 && (
         <>
-          <span>/</span>
-          <div className="flex flex-wrap gap-1">
-            {item.tags.map((tag) => (
-              <span
-                key={tag.id}
-                className="border border-neutral-300/80 dark:border-stone-800 rounded-full px-2.5 py-0.5 text-[8.5px] font-normal text-neutral-400 dark:text-stone-500 uppercase"
-              >
-                {tag.name}
-              </span>
-            ))}
-          </div>
+          <span>{item.tags[0].name}</span>
+          <span className="mx-1 text-neutral-200 dark:text-neutral-800">/</span>
         </>
       )}
+      <span>{formattedDate}</span>
     </div>
   );
 
@@ -61,7 +50,7 @@ export const WorkCard: React.FC<WorkCardProps> = ({ item, variant = 'medium' }) 
             <div className="space-y-4">
               {renderMetadata()}
               <Link to={`/work/${item.id}`} className="group block">
-                <h2 className="font-sans font-black text-3xl sm:text-4xl lg:text-[46px] tracking-tighter text-neutral-900 dark:text-stone-100 leading-[0.98] uppercase group-hover:text-neutral-700 dark:group-hover:text-stone-300 transition-colors duration-300">
+                <h2 className="font-sans font-light text-3xl sm:text-4xl lg:text-[46px] tracking-widest text-black dark:text-white leading-[0.98] uppercase group-hover:text-neutral-500 dark:group-hover:text-neutral-400 transition-colors duration-300">
                   {item.title}
                 </h2>
               </Link>
@@ -73,7 +62,7 @@ export const WorkCard: React.FC<WorkCardProps> = ({ item, variant = 'medium' }) 
             <div className="pt-6">
               <Link
                 to={`/work/${item.id}`}
-                className="inline-block text-[10px] font-bold tracking-[0.2em] uppercase text-neutral-900 dark:text-stone-100 border-b-2 border-neutral-900 dark:border-stone-100 pb-0.5 hover:text-neutral-500 dark:hover:text-stone-400 hover:border-neutral-500 dark:hover:border-stone-400 transition-all font-sans"
+                className="inline-block text-[10px] font-light tracking-[0.2em] uppercase text-black dark:text-white border-b border-black dark:border-white pb-0.5 hover:text-neutral-500 dark:hover:text-neutral-400 hover:border-neutral-500 dark:hover:border-neutral-400 transition-all font-sans"
               >
                 Read Article
               </Link>
@@ -82,23 +71,19 @@ export const WorkCard: React.FC<WorkCardProps> = ({ item, variant = 'medium' }) 
 
           {/* Right: Image */}
           <div className="md:col-span-6">
-            {hasImage ? (
-              <Link 
-                to={`/work/${item.id}`}
-                className="block w-full overflow-hidden bg-neutral-100 dark:bg-stone-900"
-              >
+            <Link 
+              to={`/work/${item.id}`}
+              className="block w-full aspect-[4/3] overflow-hidden bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors duration-300"
+            >
+              {hasImage ? (
                 <img
                   {...getResponsiveImageProps(item.imageUrl, "(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 640px")}
                   alt={item.title}
                   loading="eager"
-                  className="w-full h-auto hover:scale-101 transition-transform duration-500 ease-out"
+                  className="w-full h-full object-cover hover:scale-101 transition-transform duration-500 ease-out"
                 />
-              </Link>
-            ) : (
-              <div className="aspect-[4/3] bg-neutral-100 border border-dashed border-neutral-200/80 flex items-center justify-center">
-                <span className="text-[10px] uppercase tracking-widest text-neutral-300">No Image</span>
-              </div>
-            )}
+              ) : null}
+            </Link>
           </div>
         </div>
       </div>
@@ -108,23 +93,23 @@ export const WorkCard: React.FC<WorkCardProps> = ({ item, variant = 'medium' }) 
   if (variant === 'medium') {
     return (
       <div className="py-6 text-left">
-        {hasImage && (
-          <Link 
-            to={`/work/${item.id}`}
-            className="block w-full overflow-hidden bg-neutral-100 dark:bg-stone-900 mb-4"
-          >
+        <Link 
+          to={`/work/${item.id}`}
+          className="block w-full aspect-[4/3] overflow-hidden bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors duration-300 mb-4"
+        >
+          {hasImage ? (
             <img
               {...getResponsiveImageProps(item.imageUrl, "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px")}
               alt={item.title}
               loading="lazy"
-              className="w-full h-auto hover:scale-101 transition-transform duration-500 ease-out"
+              className="w-full h-full object-cover hover:scale-101 transition-transform duration-500 ease-out"
             />
-          </Link>
-        )}
+          ) : null}
+        </Link>
         <div className="space-y-2">
           {renderMetadata()}
           <Link to={`/work/${item.id}`} className="group block">
-            <h3 className="font-sans font-extrabold text-xl sm:text-2xl text-neutral-900 dark:text-stone-100 uppercase leading-[1.05] tracking-tight group-hover:text-neutral-700 dark:group-hover:text-stone-300 transition-colors duration-300">
+            <h3 className="font-sans font-light text-lg sm:text-xl text-black dark:text-white uppercase leading-normal tracking-widest group-hover:text-neutral-500 dark:group-hover:text-neutral-400 transition-colors duration-300">
               {item.title}
             </h3>
           </Link>
@@ -136,23 +121,23 @@ export const WorkCard: React.FC<WorkCardProps> = ({ item, variant = 'medium' }) 
   if (variant === 'small') {
     return (
       <div className="py-4 text-left">
-        {hasImage && (
-          <Link 
-            to={`/work/${item.id}`}
-            className="block w-full overflow-hidden bg-neutral-100 dark:bg-stone-900 mb-3"
-          >
+        <Link 
+          to={`/work/${item.id}`}
+          className="block w-full aspect-[4/3] overflow-hidden bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors duration-300 mb-3"
+        >
+          {hasImage ? (
             <img
               {...getResponsiveImageProps(item.imageUrl, "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 250px")}
               alt={item.title}
               loading="lazy"
-              className="w-full h-auto hover:scale-101 transition-transform duration-500 ease-out"
+              className="w-full h-full object-cover hover:scale-101 transition-transform duration-500 ease-out"
             />
-          </Link>
-        )}
+          ) : null}
+        </Link>
         <div className="space-y-2">
           {renderMetadata()}
           <Link to={`/work/${item.id}`} className="group block">
-            <h4 className="font-sans font-extrabold text-sm sm:text-base text-neutral-900 dark:text-stone-100 uppercase leading-[1.1] tracking-tight group-hover:text-neutral-700 dark:group-hover:text-stone-300 transition-colors duration-300">
+            <h4 className="font-sans font-light text-xs sm:text-sm text-black dark:text-white uppercase leading-normal tracking-widest group-hover:text-neutral-500 dark:group-hover:text-neutral-400 transition-colors duration-300">
               {item.title}
             </h4>
           </Link>
@@ -161,26 +146,54 @@ export const WorkCard: React.FC<WorkCardProps> = ({ item, variant = 'medium' }) 
     );
   }
 
+  if (variant === 'portrait') {
+    return (
+      <div className="flex-shrink-0 w-[240px] sm:w-[280px] md:w-[320px] select-none text-left">
+        <Link 
+          to={`/work/${item.id}`}
+          className="block aspect-[3/4] w-full overflow-hidden bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors duration-300 mb-3"
+        >
+          {hasImage ? (
+            <img
+              src={item.imageUrl}
+              alt={item.title}
+              loading="lazy"
+              className="h-full w-full object-cover hover:scale-101 transition-transform duration-500 ease-out"
+            />
+          ) : null}
+        </Link>
+        <div className="space-y-1">
+          <Link to={`/work/${item.id}`} className="group block">
+            <h4 className="font-sans font-light text-xs sm:text-sm text-black dark:text-white uppercase leading-tight tracking-widest group-hover:text-neutral-500 dark:group-hover:text-neutral-400 transition-colors">
+              {item.title}
+            </h4>
+          </Link>
+          {renderMetadata()}
+        </div>
+      </div>
+    );
+  }
+
   // variant === 'sidebar'
   return (
     <div className="py-2 text-left">
-      {hasImage && (
-        <Link 
-          to={`/work/${item.id}`}
-          className="block w-full overflow-hidden bg-neutral-100 dark:bg-stone-900 mb-3"
-        >
+      <Link 
+        to={`/work/${item.id}`}
+        className="block w-full aspect-[4/3] overflow-hidden bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors duration-300 mb-3"
+      >
+        {hasImage ? (
           <img
             {...getResponsiveImageProps(item.imageUrl, "(max-width: 1024px) 100vw, 300px")}
             alt={item.title}
             loading="lazy"
-            className="w-full h-auto hover:scale-101 transition-transform duration-500 ease-out"
+            className="w-full h-full object-cover hover:scale-101 transition-transform duration-500 ease-out"
           />
-        </Link>
-      )}
+        ) : null}
+      </Link>
       <div className="space-y-2">
         {renderMetadata()}
         <Link to={`/work/${item.id}`} className="group block">
-          <h4 className="font-sans font-extrabold text-[13px] sm:text-sm text-neutral-900 dark:text-stone-100 uppercase leading-[1.15] tracking-tight group-hover:text-neutral-700 dark:group-hover:text-stone-300 transition-colors duration-300">
+          <h4 className="font-sans font-light text-xs text-black dark:text-white uppercase leading-[1.15] tracking-widest group-hover:text-neutral-500 dark:group-hover:text-neutral-400 transition-colors duration-300">
             {item.title}
           </h4>
         </Link>

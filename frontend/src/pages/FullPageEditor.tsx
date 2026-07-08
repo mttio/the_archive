@@ -396,7 +396,7 @@ export const FullPageEditor: React.FC = () => {
       />
 
       {/* Sticky Edit Control Header Bar */}
-      <header className="sticky top-0 z-40 w-full bg-stone-50/90 dark:bg-stone-950/90 backdrop-blur-md border-b border-neutral-200 dark:border-stone-800 mb-8">
+      <header className="sticky top-0 z-40 w-full bg-white/90 dark:bg-black/90 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-900 mb-8">
         <div className="mx-auto max-w-5xl px-6 lg:px-8 flex flex-col sm:flex-row sm:items-center sm:justify-between py-4 gap-4">
           <div className="flex items-center space-x-4">
             <Link
@@ -408,7 +408,7 @@ export const FullPageEditor: React.FC = () => {
             </Link>
             <div className="flex flex-col sm:flex-row sm:items-center gap-3">
               <div>
-                <h1 className="font-sans font-extrabold uppercase text-xs sm:text-sm text-neutral-900 dark:text-stone-100 leading-none">
+                <h1 className="font-sans font-light uppercase text-xs sm:text-sm text-neutral-900 dark:text-stone-100 leading-none">
                   {isCreateMode ? 'Drafting New Post' : 'Editing Post'}
                 </h1>
                 <span className="text-[9px] text-neutral-400 font-mono mt-0.5 block">
@@ -457,7 +457,7 @@ export const FullPageEditor: React.FC = () => {
               type="button"
               onClick={() => savePost(false)}
               disabled={saving}
-              className="flex items-center justify-center space-x-1.5 bg-neutral-900 dark:bg-stone-200 px-5 py-2 text-xs font-semibold text-white dark:text-stone-950 hover:bg-neutral-800 dark:hover:bg-stone-300 transition-colors cursor-pointer rounded-none disabled:bg-neutral-400"
+              className="flex items-center justify-center space-x-1.5 bg-neutral-900 dark:bg-white px-5 py-2 text-xs font-semibold text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors cursor-pointer rounded-none disabled:bg-neutral-400"
             >
               <Save size={14} />
               <span>{saving ? 'Saving...' : 'Publish'}</span>
@@ -477,7 +477,7 @@ export const FullPageEditor: React.FC = () => {
               type="text"
               value={formData.title}
               onChange={(e) => handleTitleChange(e.target.value)}
-              className="font-sans font-extrabold uppercase text-3xl sm:text-4xl lg:text-5xl tracking-tight text-neutral-900 dark:text-stone-100 leading-tight w-full bg-transparent border-0 border-b border-transparent focus:border-neutral-200 dark:focus:border-stone-800 focus:outline-none py-1"
+              className="font-sans font-light uppercase text-3xl sm:text-4xl lg:text-5xl tracking-tight text-neutral-900 dark:text-stone-100 leading-tight w-full bg-transparent border-0 border-b border-transparent focus:border-neutral-200 dark:focus:border-stone-800 focus:outline-none py-1"
               placeholder="Enter Title..."
             />
           </div>
@@ -487,7 +487,7 @@ export const FullPageEditor: React.FC = () => {
             <textarea
               value={formData.subtitle}
               onChange={(e) => setFormData(prev => ({ ...prev, subtitle: e.target.value }))}
-              className="text-lg sm:text-xl text-neutral-600 dark:text-stone-400 font-serif italic font-light max-w-3xl w-full bg-transparent border-0 border-b border-transparent focus:border-neutral-200 dark:focus:border-stone-800 focus:outline-none py-1 resize-none h-auto overflow-hidden"
+              className="text-lg sm:text-xl text-neutral-600 dark:text-stone-400 font-sans font-light max-w-3xl w-full bg-transparent border-0 border-b border-transparent focus:border-neutral-200 dark:focus:border-stone-800 focus:outline-none py-1 resize-none h-auto overflow-hidden"
               rows={2}
               placeholder="Enter subtitle and short description hook..."
             />
@@ -524,7 +524,7 @@ export const FullPageEditor: React.FC = () => {
                       }}
                       className={`rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider transition-all duration-200 border cursor-pointer ${
                         isSelected
-                          ? 'bg-neutral-900 border-neutral-900 text-white font-bold dark:bg-stone-200 dark:border-stone-200 dark:text-stone-950'
+                          ? 'bg-neutral-900 border-neutral-900 text-white font-bold dark:bg-white dark:border-stone-200 dark:text-black'
                           : 'text-neutral-400 border-neutral-200/80 dark:border-stone-850 bg-neutral-50 dark:bg-stone-900 hover:bg-neutral-100 hover:text-neutral-700 dark:hover:bg-stone-800 dark:hover:text-stone-200 font-semibold'
                       }`}
                     >
@@ -601,7 +601,7 @@ export const FullPageEditor: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setShowImagePopover(false)}
-                    className="w-full bg-neutral-900 dark:bg-stone-200 text-white dark:text-stone-950 hover:bg-neutral-800 dark:hover:bg-stone-300 text-xs font-semibold py-2 transition-colors cursor-pointer rounded-none"
+                    className="w-full bg-neutral-900 dark:bg-white text-white dark:text-black hover:bg-neutral-800 dark:hover:bg-neutral-200 text-xs font-semibold py-2 transition-colors cursor-pointer rounded-none"
                   >
                     Apply Image
                   </button>
@@ -619,7 +619,7 @@ export const FullPageEditor: React.FC = () => {
               <button
                 type="button"
                 onClick={handleCoverImageUploadClick}
-                className="bg-neutral-900 dark:bg-stone-205 hover:bg-neutral-800 dark:hover:bg-stone-300 text-white dark:text-stone-950 px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer rounded-none"
+                className="bg-neutral-900 dark:bg-white hover:bg-neutral-800 dark:hover:bg-neutral-200 text-white dark:text-black px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer rounded-none"
               >
                 Upload Cover Image
               </button>
@@ -645,7 +645,7 @@ export const FullPageEditor: React.FC = () => {
               onClick={() => setActiveTab('write')}
               className={`flex items-center space-x-1.5 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer rounded-none ${
                 activeTab === 'write'
-                  ? 'bg-white dark:bg-stone-950 text-neutral-900 dark:text-stone-100 shadow-xs font-bold'
+                  ? 'bg-white dark:bg-black text-neutral-900 dark:text-stone-100 shadow-xs font-bold'
                   : 'text-neutral-500 dark:text-stone-400 hover:text-neutral-800 dark:hover:text-stone-200'
               }`}
             >
@@ -657,7 +657,7 @@ export const FullPageEditor: React.FC = () => {
               onClick={() => setActiveTab('preview')}
               className={`flex items-center space-x-1.5 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer rounded-none ${
                 activeTab === 'preview'
-                  ? 'bg-white dark:bg-stone-950 text-neutral-900 dark:text-stone-100 shadow-xs font-bold'
+                  ? 'bg-white dark:bg-black text-neutral-900 dark:text-stone-100 shadow-xs font-bold'
                   : 'text-neutral-500 dark:text-stone-400 hover:text-neutral-800 dark:hover:text-stone-200'
               }`}
             >
@@ -769,13 +769,13 @@ export const FullPageEditor: React.FC = () => {
                 ref={textareaRef}
                 value={formData.content}
                 onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
-                className="w-full min-h-[450px] border border-neutral-200 dark:border-stone-800 p-4 font-mono text-[13px] leading-relaxed focus:border-neutral-400 dark:focus:border-stone-600 focus:outline-none bg-white dark:bg-stone-900 text-neutral-800 dark:text-stone-100 resize-y"
+                className="w-full min-h-[450px] border border-neutral-200 dark:border-stone-800 p-4 font-sans font-light text-sm leading-relaxed focus:border-neutral-400 dark:focus:border-stone-600 focus:outline-none bg-white dark:bg-stone-900 text-neutral-800 dark:text-stone-100 resize-y"
                 placeholder="Write article content in standard Markdown style... Use the toolbar shortcuts to embed custom Obsidian-style media links such as ![[image: url | layout: center]]"
               />
             </div>
           ) : (
              <div className="border border-neutral-200 dark:border-stone-800 bg-white dark:bg-stone-900 p-6 md:p-8 min-h-[500px]">
-               <div className="prose prose-neutral dark:prose-invert max-w-3xl mx-auto text-left text-neutral-800 dark:text-stone-300">
+               <div className="prose prose-neutral dark:prose-invert max-w-3xl mx-auto text-left font-sans font-light text-neutral-800 dark:text-stone-300">
                 {parseMarkdownToReact(formData.content)}
               </div>
             </div>

@@ -38,22 +38,6 @@ const Linkedin: React.FC<{ size?: number }> = ({ size = 18 }) => (
   </svg>
 );
 
-const Youtube: React.FC<{ size?: number }> = ({ size = 18 }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25a29 29 0 0 0-.46-5.33z" />
-    <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" />
-  </svg>
-);
 
 export const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -65,18 +49,19 @@ export const Navbar: React.FC = () => {
   };
 
   const navLinks = [
-    { name: 'Articles', path: '/' },
+    { name: 'Home', path: '/' },
+    { name: 'All Articles', path: '/articles' },
     { name: 'About', path: '/about' },
     { name: 'Contact', path: '/contact' },
   ];
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-neutral-300/80 bg-stone-50/80 backdrop-blur-md mb-8 dark:bg-stone-950/80 dark:border-stone-800/80">
-      <div className="mx-auto max-w-5xl px-6 lg:px-8">
+    <nav className="sticky top-0 z-50 w-full bg-white/30 backdrop-blur-md mb-2 dark:bg-black/30 transition-colors duration-300">
+      <div className="w-full px-6 md:px-12">
         <div className="flex h-14 items-center justify-between">
           {/* Logo / Title */}
           <Link to="/" className="flex items-center space-x-2 group">
-            <span className="font-sans text-[15px] font-black tracking-widest text-neutral-900 dark:text-stone-100 uppercase transition-colors group-hover:text-neutral-600 dark:group-hover:text-stone-400 transition-all duration-300">
+            <span className="font-sans text-[16px] font-light tracking-widest text-black dark:text-white uppercase transition-colors group-hover:text-neutral-500 dark:group-hover:text-neutral-400 transition-all duration-300">
               The Archive
             </span>
           </Link>
@@ -87,10 +72,10 @@ export const Navbar: React.FC = () => {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`text-[10px] font-light tracking-[0.25em] uppercase transition-colors duration-200 ${
+                className={`text-[12px] tracking-[0.25em] uppercase transition-colors duration-200 pb-0.5 ${
                   isActive(link.path)
-                    ? 'text-neutral-900 font-semibold border-b border-neutral-900 dark:text-stone-100 dark:border-stone-100 pb-0.5'
-                    : 'text-neutral-400 hover:text-neutral-900 dark:text-stone-500 dark:hover:text-stone-100 pb-0.5 border-b border-transparent'
+                    ? 'text-black dark:text-white font-normal'
+                    : 'text-neutral-400 hover:text-black dark:text-neutral-500 dark:hover:text-white font-light'
                 }`}
               >
                 {link.name}
@@ -99,7 +84,7 @@ export const Navbar: React.FC = () => {
           </div>
 
           {/* Social Links & Theme Toggle */}
-          <div className="hidden md:flex items-center space-x-4 border-l border-neutral-200 dark:border-stone-800 pl-6 ml-2">
+          <div className="hidden md:flex items-center space-x-4 pl-6 ml-2">
             <a
               href="https://github.com/mttio"
               target="_blank"
@@ -136,21 +121,11 @@ export const Navbar: React.FC = () => {
             >
               <Activity size={15} />
             </a>
-            <a
-              href="https://www.youtube.com/@matteoberga"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="YouTube"
-              className="text-neutral-400 hover:text-neutral-900 dark:text-stone-500 dark:hover:text-stone-100 transition-colors"
-            >
-              <Youtube size={15} />
-            </a>
             
-            {/* Desktop Theme Switcher */}
             <button
               onClick={toggleTheme}
               aria-label="Toggle Theme"
-              className="text-neutral-400 hover:text-neutral-900 dark:text-stone-500 dark:hover:text-stone-100 transition-colors cursor-pointer border-l border-neutral-200 dark:border-stone-800 pl-4 ml-1"
+              className="text-neutral-400 hover:text-black dark:text-neutral-500 dark:hover:text-white transition-colors cursor-pointer pl-4 ml-1"
             >
               {isDark ? <Sun size={15} /> : <Moon size={15} />}
             </button>
@@ -178,7 +153,7 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden border-b border-neutral-300/80 bg-stone-50 dark:bg-stone-950 dark:border-stone-800 px-6 py-4 space-y-3">
+        <div className="md:hidden bg-white dark:bg-black px-6 py-4 space-y-3 transition-colors duration-300">
           {navLinks.map((link) => (
             <Link
               key={link.path}
@@ -193,7 +168,7 @@ export const Navbar: React.FC = () => {
               {link.name}
             </Link>
           ))}
-          <div className="flex items-center space-x-5 pt-4 border-t border-neutral-200 dark:border-stone-800">
+          <div className="flex items-center space-x-5 pt-4 border-t border-neutral-100 dark:border-neutral-900">
             <a
               href="https://github.com/mttio"
               target="_blank"
@@ -225,14 +200,6 @@ export const Navbar: React.FC = () => {
               className="text-neutral-400 hover:text-neutral-900 dark:text-stone-500 dark:hover:text-stone-100 transition-colors"
             >
               <Activity size={18} />
-            </a>
-            <a
-              href="https://www.youtube.com/@matteoberga"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-neutral-400 hover:text-neutral-900 dark:text-stone-500 dark:hover:text-stone-100 transition-colors"
-            >
-              <Youtube size={18} />
             </a>
           </div>
         </div>

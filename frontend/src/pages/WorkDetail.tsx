@@ -55,7 +55,7 @@ export const WorkDetail: React.FC = () => {
         </p>
         <button
           onClick={() => navigate('/')}
-          className="inline-flex items-center space-x-2 rounded-none bg-neutral-900 px-6 py-2.5 text-[10px] font-bold uppercase tracking-widest text-white hover:bg-neutral-800 transition-colors"
+          className="inline-flex items-center space-x-2 rounded-none bg-neutral-900 px-6 py-2.5 text-[10px] font-light tracking-widest text-white hover:bg-neutral-800 transition-colors"
         >
           <ArrowLeft size={12} />
           <span>Return Home</span>
@@ -86,64 +86,55 @@ export const WorkDetail: React.FC = () => {
   return (
     <article className="py-8 space-y-8 max-w-3xl mx-auto text-left">
       {/* Header back button */}
-      <div className="flex justify-between items-center pb-2 editorial-border-b">
+      <div className="flex justify-between items-center pb-2">
         <button
           onClick={() => navigate(-1)}
-          className="group flex items-center space-x-2 text-[10px] font-bold tracking-widest text-neutral-400 hover:text-neutral-900 dark:text-stone-500 dark:hover:text-stone-100 transition-colors cursor-pointer uppercase font-sans"
+          className="group flex items-center space-x-2 text-[10px] font-light tracking-widest text-neutral-400 hover:text-black dark:text-neutral-500 dark:hover:text-white transition-colors cursor-pointer uppercase font-sans"
         >
           <ArrowLeft size={12} className="transition-transform group-hover:-translate-x-1" />
           <span>Back to Articles</span>
         </button>
-        <span className="text-[9px] font-bold tracking-widest text-neutral-300 dark:text-stone-600 uppercase font-sans">
+        <span className="text-[9px] font-light tracking-widest text-neutral-300 dark:text-neutral-700 uppercase font-sans">
           Entry Details
         </span>
       </div>
 
       {/* Intro Metadata */}
       <div className="space-y-4">
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[9px] font-bold tracking-widest text-neutral-400 dark:text-stone-500 uppercase font-sans">
-          <span>{formatDateForDisplay(item.date)}</span>
-          <span>/</span>
-          <span>BY MATTEO BERGA</span>
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[9px] font-medium tracking-widest text-neutral-400 dark:text-neutral-500 uppercase font-sans">
           {item.tags && item.tags.length > 0 && (
             <>
-              <span>/</span>
-              <div className="flex flex-wrap gap-1">
-                {item.tags.map((tag) => (
-                  <span
-                    key={tag.id}
-                    className="border border-neutral-300/80 dark:border-stone-800 rounded-full px-2 py-0.5 text-[8.5px] font-normal text-neutral-400 dark:text-stone-500 uppercase"
-                  >
-                    {tag.name}
-                  </span>
-                ))}
-              </div>
+              <span>{item.tags[0].name}</span>
+              <span className="mx-1">—</span>
             </>
           )}
+          <span>{formatDateForDisplay(item.date)}</span>
+          <span className="mx-1">—</span>
+          <span>BY MATTEO BERGA</span>
         </div>
         
-        <h1 className="font-sans font-black text-3xl sm:text-4xl lg:text-5xl tracking-tighter text-neutral-900 dark:text-stone-100 leading-none uppercase">
+        <h1 className="font-sans font-light text-3xl sm:text-4xl lg:text-5xl tracking-widest text-black dark:text-white leading-none uppercase">
           {item.title}
         </h1>
         
-        <p className="text-sm sm:text-base text-neutral-500 dark:text-stone-400 font-sans leading-relaxed tracking-wide font-light max-w-2xl">
+        <p className="text-sm sm:text-base text-neutral-500 dark:text-neutral-400 font-sans leading-relaxed tracking-wide font-light max-w-2xl">
           {item.subtitle}
         </p>
       </div>
 
       {/* Main Showcase Image */}
-      {item.imageUrl && item.imageUrl.trim() !== '' && (
-        <div className="relative w-full overflow-hidden bg-neutral-100 dark:bg-stone-900">
+      <div className="relative w-full aspect-video md:aspect-[21/9] overflow-hidden bg-neutral-100 dark:bg-neutral-900">
+        {item.imageUrl && item.imageUrl.trim() !== '' ? (
           <img
-            {...getResponsiveImageProps(item.imageUrl, "(max-width: 768px) 100vw, 768px")}
+            {...getResponsiveImageProps(item.imageUrl, "(max-width: 768px) 100vw, 1200px")}
             alt={item.title}
-            className="w-full h-auto"
+            className="w-full h-full object-cover"
           />
-        </div>
-      )}
+        ) : null}
+      </div>
 
       {/* Content body layout */}
-      <div className="prose prose-neutral dark:prose-invert max-w-none pt-4 text-left font-serif leading-relaxed text-neutral-700 dark:text-stone-300">
+      <div className="prose prose-neutral dark:prose-invert max-w-none pt-4 text-left font-sans font-light leading-relaxed text-neutral-800 dark:text-neutral-250">
         {renderContent(item.content)}
       </div>
     </article>

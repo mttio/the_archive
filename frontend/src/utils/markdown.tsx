@@ -12,7 +12,7 @@ function parseInline(text: string): React.ReactNode[] {
     if (typeof p !== 'string') return p;
     const split = p.split(/\*\*(.*?)\*\*/g);
     return split.map((chunk, idx) => 
-      idx % 2 === 1 ? <strong key={idx} className="font-bold text-neutral-900 dark:text-stone-100">{chunk}</strong> : chunk
+      idx % 2 === 1 ? <strong key={idx} className="font-medium text-neutral-900 dark:text-stone-100">{chunk}</strong> : chunk
     );
   });
 
@@ -195,7 +195,7 @@ export function parseMarkdownToReact(text: string): React.ReactNode {
     if (trimmed.startsWith('## ')) {
       flushList();
       elements.push(
-        <h2 key={`h2-${keyIdx++}`} className="font-sans font-extrabold uppercase text-xl sm:text-2xl text-neutral-900 dark:text-stone-100 mt-10 mb-4 tracking-tight">
+        <h2 key={`h2-${keyIdx++}`} className="font-sans font-light uppercase text-xl sm:text-2xl text-neutral-900 dark:text-stone-100 mt-10 mb-4 tracking-tight">
           {parseInline(trimmed.substring(3))}
         </h2>
       );
@@ -205,7 +205,7 @@ export function parseMarkdownToReact(text: string): React.ReactNode {
     if (trimmed.startsWith('### ')) {
       flushList();
       elements.push(
-        <h3 key={`h3-${keyIdx++}`} className="font-sans font-extrabold uppercase text-lg sm:text-xl text-neutral-900 dark:text-stone-100 mt-8 mb-4 tracking-tight">
+        <h3 key={`h3-${keyIdx++}`} className="font-sans font-light uppercase text-lg sm:text-xl text-neutral-900 dark:text-stone-100 mt-8 mb-4 tracking-tight">
           {parseInline(trimmed.substring(4))}
         </h3>
       );

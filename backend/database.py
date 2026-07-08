@@ -11,7 +11,7 @@ INITIAL_WORKS = [
     "subtitle": "A journey into language design, parsing, and code generation.",
     "description": "Designed and implemented a tiny compiler in TypeScript that compiles a custom algebraic language down to WebAssembly (Wasm) binary format.",
     "date": "May 2026",
-    "imageUrl": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1200",
+    "imageUrl": "",
     "githubUrl": "https://github.com/example/wasm-compiler",
     "externalUrl": "https://compiler-demo.example.com",
     "content": """### The Challenge
@@ -26,7 +26,7 @@ The compiler is written in TypeScript and works through three classic compiler p
 - **Syntactic Analysis (Parser):** Builds an Abstract Syntax Tree (AST) using recursive descent. It validates syntax rules and enforces basic type checks.
 - **Code Generation (Emitter):** Converts the AST nodes into raw WebAssembly binary format (using the Wasm binary encoding specification), writing LEB128-encoded integers and instruction bytecodes directly to an ArrayBuffer.
 
-![[image: https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1200 | layout: wide | caption: Visualizing WebAssembly stack machine parsing stages.]]
+![[image: https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1200 | layout: wide | caption: Visualizing WebAssembly stack machine parsing stages.]]
 
 ### What I Learned
 
@@ -41,25 +41,25 @@ Moving forward, I plan to add basic memory allocations and garbage collection mo
     "subtitle": "Exploring high-contrast lighting and organic textures with traditional ink.",
     "description": "A series of traditional ink and brush illustrations focused on light interaction, shadows, and natural patterns.",
     "date": "April 2026",
-    "imageUrl": "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=1200",
+    "imageUrl": "",
     "githubUrl": "",
     "externalUrl": "",
     "content": """### Creative Philosophy
 
 Monochromatic art strips away the distraction of color, forcing both the artist and the viewer to focus entirely on values, form, composition, and texture. This series was born from my daily sketches, looking for a way to translate natural structures (tree bark, water ripples, and muscular tension) using black sumi ink.
 
-![[image: https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=1200 | layout: wide | caption: Sumi brush strokes on cotton paper.]]
+![[image: https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?q=80&w=1200 | layout: wide | caption: Sumi brush strokes on cotton paper.]]
 
 ### Tools & Techniques
 
 I used traditional Japanese Sumi ink, Kolinsky sable round brushes, and heavy cold-press cotton paper (300gsm) to achieve raw, textured edges. The primary technique used was dry-brushing, which leaves tiny white flecks of paper showing through the brush strokes, mimicking natural light reflection on surfaces.
 
-![[carousel: https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=800, https://images.unsplash.com/photo-1580136579312-94651dfd596d?q=80&w=800 | captions: Brush flow and pressure exercises, High contrast values details]]
-
+![[carousel: https://images.unsplash.com/photo-1541701494587-cb58502866ab?q=80&w=800, https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=800 | captions: Brush flow and pressure exercises, High contrast values details]]
+---
 ### Intersection with Engineering
 
 As a computer engineer, I see a strong parallel between ink drawing and writing code. With ink, there is no "undo" button. Once a brushstroke is committed to paper, it must be integrated into the final piece. This requires deep focus, steady pacing, and structural planning—much like designing a clean API or a reliable database schema.""",
-    "gallery": "https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=800,https://images.unsplash.com/photo-1580136579312-94651dfd596d?q=80&w=800"
+    "gallery": "https://images.unsplash.com/photo-1541701494587-cb58502866ab?q=80&w=800,https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=800"
   },
   {
     "id": "sub-3-marathon",
@@ -67,7 +67,7 @@ As a computer engineer, I see a strong parallel between ink drawing and writing 
     "subtitle": "A detailed breakdown of training cycles, nutrition, and mental stamina.",
     "description": "Documented the structured 16-week block, physiological stats, and mental strategies that led to a 2:57:42 marathon finish.",
     "date": "March 2026",
-    "imageUrl": "https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?q=80&w=1200",
+    "imageUrl": "",
     "githubUrl": "",
     "externalUrl": "",
     "content": """### The Goal
@@ -82,7 +82,7 @@ My training was structured around three key pillars:
 - **Speed & Tempo Work:** Weekly track sessions (e.g., 5x2000m at threshold) to improve running economy.
 - **Precision Nutrition:** Fueling with high-carb intake (90g per hour) during long runs to train the gut.
 
-![[image: https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?q=80&w=1200 | layout: wide | caption: Aerobic conditioning volume building phases.]]
+![[image: https://images.unsplash.com/photo-1486218119243-13883505764c?q=80&w=1200 | layout: wide | caption: Aerobic conditioning volume building phases.]]
 
 ### Data Analysis (The Engineer's Perspective)
 
@@ -99,7 +99,7 @@ Pacing was exceptionally even. I crossed the half-marathon mark at 1:28:30 and f
     "subtitle": "Implementing raft consensus for a distributed, replication-resilient store.",
     "description": "Built a distributed key-value store in Go implementing the Raft consensus algorithm, featuring leader election, log replication, and linearizable reads.",
     "date": "January 2026",
-    "imageUrl": "https://images.unsplash.com/photo-1605379399642-870262d3d051?q=80&w=1200",
+    "imageUrl": "",
     "githubUrl": "https://github.com/example/distributed-raft-kv",
     "externalUrl": "",
     "content": """### Distributed Consensus
@@ -112,7 +112,7 @@ How do we ensure multiple independent servers agree on a sequence of state updat
 - **Log Replication:** AppendEntries RPCs, matching indices, and state machine commits.
 - **Linearizable Reads:** Ensuring that read requests return the most up-to-date committed data by checking leader authority before returning results.
 
-![[image: https://images.unsplash.com/photo-1605379399642-870262d3d051?q=80&w=1200 | layout: center | caption: Node consensus status overview diagram.]]
+![[image: https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=1200 | layout: center | caption: Node consensus status overview diagram.]]
 
 This project gave me first-hand experience with concurrency primitives, network socket programming, and debugging complex race conditions.""",
     "gallery": ""
@@ -123,7 +123,7 @@ This project gave me first-hand experience with concurrency primitives, network 
     "subtitle": "Capturing dynamic athletic movement in quick gestures.",
     "description": "A digital drawing collection capturing runners, cyclists, and swimmers in mid-movement using high-contrast lighting.",
     "date": "December 2025",
-    "imageUrl": "https://images.unsplash.com/photo-1580136579312-94651dfd596d?q=80&w=1200",
+    "imageUrl": "",
     "githubUrl": "",
     "externalUrl": "",
     "content": """### Capturing Energy
@@ -134,9 +134,79 @@ Athletic gestures happen in split seconds. In this digital drawing project, I wa
 
 I used a digital tablet with a pressure-sensitive stylus, mimicking charcoal and dry pastel brushes. The focus was on speed—each sketch was completed in under 10 minutes to prevent over-analyzing and to capture the direct flow of energy.
 
-![[image: https://images.unsplash.com/photo-1580136579312-94651dfd596d?q=80&w=1200 | layout: center | caption: High gesture speed and flow values.]]
+![[image: https://images.unsplash.com/photo-1536924940846-227afb31e2a5?q=80&w=1200 | layout: center | caption: High gesture speed and flow values.]]
 
 The result is a set of expressive sketches where details are omitted, but the momentum and physiological balance are clearly felt.""",
+    "gallery": ""
+  },
+  {
+    "id": "brutalist-scaffolding",
+    "title": "Echoes of Silence: Brutalist Scaffolding",
+    "subtitle": "A monochrome architectural photography series exploring raw concrete interfaces.",
+    "description": "High-contrast captures highlighting structural shapes.",
+    "date": "October 2025",
+    "imageUrl": "",
+    "githubUrl": "",
+    "externalUrl": "",
+    "content": """### Form & Materiality
+
+Brutalist structures capture a raw, unapologetic presence. By removing color, the photographs emphasize the texture of wood-imprinted concrete, sharp geometric intersections, and the shadows cast by temporary scaffolding structures.""",
+    "gallery": ""
+  },
+  {
+    "id": "functional-haskell",
+    "title": "Type-Driven Design in Haskell",
+    "subtitle": "Exploring pure algebraic data types and functional composition in language parsing.",
+    "description": "Writing robust, verification-resilient parsers.",
+    "date": "September 2025",
+    "imageUrl": "",
+    "githubUrl": "",
+    "externalUrl": "",
+    "content": """### Why Haskell?
+
+Functional programming patterns provide mathematical guarantees. Using Haskell's parser combinators, we can construct complex syntactical analyzers that are guaranteed to fail at compile-time rather than runtime.""",
+    "gallery": ""
+  },
+  {
+    "id": "geometry-of-light",
+    "title": "The Geometry of Light",
+    "subtitle": "Moody street photography capturing late afternoon light beams.",
+    "description": "Analyzing visual patterns of shadows in municipal alleys.",
+    "date": "August 2025",
+    "imageUrl": "",
+    "githubUrl": "",
+    "externalUrl": "",
+    "content": """### Chasing Rays
+
+Alleys function as giant light stencils. During the golden hour, concrete walls act as canvas projection fields, capturing silhouettes and dust particles in sharp geometric light beams.""",
+    "gallery": ""
+  },
+  {
+    "id": "golang-webserver",
+    "title": "Building an Ultra-Fast Web Server",
+    "subtitle": "Implementing custom socket loops and HTTP parser configurations in pure Go.",
+    "description": "Bypassing default netsock allocations.",
+    "date": "June 2025",
+    "imageUrl": "",
+    "githubUrl": "",
+    "externalUrl": "",
+    "content": """### Low-level Optimization
+
+Standard libraries are built for generic cases. By directly reading from OS socket queues and parsing HTTP byte buffers manually, we cut allocation overhead in half, resulting in near-instant request processing times.""",
+    "gallery": ""
+  },
+  {
+    "id": "peaks-trailrunning",
+    "title": "Ultra Running: Training for the Peaks",
+    "subtitle": "Physiological block breakdowns for high-altitude endurance.",
+    "description": "Structuring oxygen intake and tempo intervals on mountain terrain.",
+    "date": "April 2025",
+    "imageUrl": "",
+    "githubUrl": "",
+    "externalUrl": "",
+    "content": """### Altitude Conditioning
+
+Endurance training on mountain ridges demands both physical grit and metabolic efficiency. Structuring running sessions around elevation changes builds stamina and increases aerobic capacity.""",
     "gallery": ""
   }
 ]
