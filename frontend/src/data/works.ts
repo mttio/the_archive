@@ -32,7 +32,7 @@ export const worksData: WorkItem[] = [
     id: "compiler-from-scratch",
     title: "Building a Custom WebAssembly Compiler",
     subtitle: "A journey into language design, parsing, and code generation. Designed and implemented a tiny compiler in TypeScript that compiles a custom algebraic language down to WebAssembly (Wasm) binary format.",
-    date: "May 2026",
+    date: "2026-05-24",
     tags: [mockTags.engineering, mockTags.typescript, mockTags.webassembly],
     imageUrl: "",
     content: `### The Challenge
@@ -58,7 +58,7 @@ Moving forward, I plan to add basic memory allocations and garbage collection mo
     id: "monochrome-studies",
     title: "Shadows in Ink: A Monochrome Study",
     subtitle: "Exploring high-contrast lighting and organic textures with traditional ink. A series of traditional ink and brush illustrations focused on light interaction, shadows, and natural patterns.",
-    date: "April 2026",
+    date: "2026-04-12",
     tags: [mockTags.art, mockTags.ink],
     imageUrl: "",
     content: `### Creative Philosophy
@@ -81,7 +81,7 @@ As a computer engineer, I see a strong parallel between ink drawing and writing 
     id: "sub-3-marathon",
     title: "Breaking the 3-Hour Marathon Barrier",
     subtitle: "A detailed breakdown of training cycles, nutrition, and mental stamina. Documented the structured 16-week block, physiological stats, and mental strategies that led to a 2:57:42 marathon finish.",
-    date: "March 2026",
+    date: "2026-03-08",
     tags: [mockTags.sports, mockTags.running],
     imageUrl: "",
     content: `### The Goal
@@ -109,7 +109,7 @@ Pacing was exceptionally even. I crossed the half-marathon mark at 1:28:30 and f
     id: "distributed-database",
     title: "Distributed Key-Value Store from Scratch",
     subtitle: "Implementing raft consensus for a distributed, replication-resilient store. Built a distributed key-value store in Go implementing the Raft consensus algorithm, featuring leader election, log replication, and linearizable reads.",
-    date: "January 2026",
+    date: "2026-01-15",
     tags: [mockTags.engineering, mockTags.go, mockTags.distributed],
     imageUrl: "",
     content: `### Distributed Consensus
@@ -130,7 +130,7 @@ This project gave me first-hand experience with concurrency primitives, network 
     id: "sketches-of-motion",
     title: "Sketches of Motion: Figure & Movement studies",
     subtitle: "Capturing dynamic athletic movement in quick gestures. A digital drawing collection capturing runners, cyclists, and swimmers in mid-movement using high-contrast lighting.",
-    date: "December 2025",
+    date: "2025-12-05",
     tags: [mockTags.art],
     imageUrl: "",
     content: `### Capturing Energy
@@ -149,7 +149,7 @@ The result is a set of expressive sketches where details are omitted, but the mo
     id: "brutalist-scaffolding",
     title: "Echoes of Silence: Brutalist Scaffolding",
     subtitle: "A monochrome architectural photography series exploring raw concrete interfaces. High-contrast captures highlighting structural shapes.",
-    date: "October 2025",
+    date: "2025-10-20",
     tags: [mockTags.art, mockTags.ink],
     imageUrl: "",
     content: `### Form & Materiality
@@ -160,7 +160,7 @@ Brutalist structures capture a raw, unapologetic presence. By removing color, th
     id: "functional-haskell",
     title: "Type-Driven Design in Haskell",
     subtitle: "Exploring pure algebraic data types and functional composition in language parsing. Writing robust, verification-resilient parsers.",
-    date: "September 2025",
+    date: "2025-09-10",
     tags: [mockTags.engineering],
     imageUrl: "",
     content: `### Why Haskell?
@@ -171,7 +171,7 @@ Functional programming patterns provide mathematical guarantees. Using Haskell's
     id: "geometry-of-light",
     title: "The Geometry of Light",
     subtitle: "Moody street photography capturing late afternoon light beams. Analyzing visual patterns of shadows in municipal alleys.",
-    date: "August 2025",
+    date: "2025-08-01",
     tags: [mockTags.art],
     imageUrl: "",
     content: `### Chasing Rays
@@ -182,7 +182,7 @@ Alleys function as giant light stencils. During the golden hour, concrete walls 
     id: "golang-webserver",
     title: "Building an Ultra-Fast Web Server",
     subtitle: "Implementing custom socket loops and HTTP parser configurations in pure Go. Bypassing default netsock allocations.",
-    date: "June 2025",
+    date: "2025-06-15",
     tags: [mockTags.engineering, mockTags.go, mockTags.distributed],
     imageUrl: "",
     content: `### Low-level Optimization
@@ -193,7 +193,7 @@ Standard libraries are built for generic cases. By directly reading from OS sock
     id: "peaks-trailrunning",
     title: "Ultra Running: Training for the Peaks",
     subtitle: "Physiological block breakdowns for high-altitude endurance. Structuring oxygen intake and tempo intervals on mountain terrain.",
-    date: "April 2025",
+    date: "2025-04-05",
     tags: [mockTags.sports, mockTags.running],
     imageUrl: "",
     content: `### Altitude Conditioning
