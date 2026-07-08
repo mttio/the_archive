@@ -405,5 +405,18 @@ def delete_contact_message(message_id: int):
     conn.close()
 
 if __name__ == "__main__":
-    init_db(force_reset=True)
-    print("Database reset and initialized successfully.")
+    import sys
+    # Add safety check to prevent accidental database resets
+    if "--force-reset" in sys.argv:
+        try:
+            confirm = input("WARNING: This will completely reset the database and delete all data! Type 'YES' to confirm: ")
+            if confirm == "YES":
+                init_db(force_reset=True)
+                print("Database reset and initialized successfully.")
+            else:
+                print("Reset cancelled. Database was not modified.")
+        except KeyboardInterrupt:
+            print("\nReset cancelled.")
+    else:
+        print("Usage: python3 database.py --force-reset")
+        print("For security reasons, running this file directly requires the '--force-reset' argument and confirmation.")
