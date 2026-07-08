@@ -55,6 +55,11 @@ Se dovessi acquistare un nuovo server o voler ricreare l'intero ecosistema, segu
    - **Indirizzo IPv6**: L'IP IPv6 della tua VPS (es. `2a00:6d40:72:101::606`).
    - **Proxy status**: Attivo (Nuvoletta arancione).
 4. Imposta la modalità di crittografia SSL/TLS globale di Cloudflare su **Full**.
+5. Crea un record **A** per aggirare il blocco SFTP di Cloudflare:
+   - **Nome**: `ssh` (creerà `ssh.matteoberga.com`)
+   - **Indirizzo IPv4**: Inserisci l'IP reale di Aruba Shared Hosting (trovato nel record A principale prima della migrazione).
+   - **Proxy status**: Disattivato (Nuvoletta grigia / DNS Only).
+
 
 ---
 
@@ -94,11 +99,11 @@ Se dovessi acquistare un nuovo server o voler ricreare l'intero ecosistema, segu
    cd "/Users/matteoberga/Coding/The Archive by Matteo Berga/frontend"
    npm run build
    ```
-2. Collegati tramite **SFTP** (porta `2222`) al tuo hosting Aruba.
+2. Collegati tramite **SFTP** (porta `2222`) all'host **`ssh.matteoberga.com`**.
 3. Carica nella cartella principale di Aruba (solitamente `/` o `/web/htdocs/www.matteoberga.com/home/`) i seguenti file:
-   - **Tutti i file all'interno di `frontend/dist/`** (`index.html`, cartella `assets`, ecc.).
-   - Il file **`api.php`** (presente nella cartella principale del progetto).
-   - Il file **`.htaccess`** (presente nella cartella principale del progetto).
+   - Tutti i file all'interno di `frontend/dist/` (`index.html`, cartella `assets`, ecc.).
+   - Il file `api.php` (presente nella cartella principale del progetto).
+   - Il file `.htaccess` (presente nella cartella principale del progetto).
 
 ---
 
