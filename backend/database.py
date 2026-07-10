@@ -257,7 +257,8 @@ def init_db(force_reset: bool = False):
                 cols = [row["name"] for row in cursor.fetchall()]
                 if "created_at" not in cols:
                     print("Migration: Adding 'created_at' column to 'works' table...")
-                    cursor.execute("ALTER TABLE works ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+                    cursor.execute("ALTER TABLE works ADD COLUMN created_at TIMESTAMP")
+                    cursor.execute("UPDATE works SET created_at = CURRENT_TIMESTAMP WHERE created_at IS NULL")
                     conn.commit()
         except Exception as e:
             print(f"Database check/migration error: {e}")
