@@ -287,17 +287,19 @@ def init_db(force_reset: bool = False):
     # Enable foreign keys
     cursor.execute("PRAGMA foreign_keys = ON")
     
-    # Reset database by dropping old tables if present
-    cursor.execute("DROP TABLE IF EXISTS work_tags")
-    cursor.execute("DROP TABLE IF EXISTS tags")
-    cursor.execute("DROP TABLE IF EXISTS works")
-    cursor.execute("DROP TABLE IF EXISTS contact_messages")
-    cursor.execute("DROP TABLE IF EXISTS images")
-    conn.commit()
+    # Reset database by dropping old tables ONLY if force_reset is explicitly True
+    if force_reset:
+        print("Force resetting database: dropping old tables...")
+        cursor.execute("DROP TABLE IF EXISTS work_tags")
+        cursor.execute("DROP TABLE IF EXISTS tags")
+        cursor.execute("DROP TABLE IF EXISTS works")
+        cursor.execute("DROP TABLE IF EXISTS contact_messages")
+        cursor.execute("DROP TABLE IF EXISTS images")
+        conn.commit()
     
-    # Create tables
+    # Create tables safely (if they do not exist)
     cursor.execute("""
-    CREATE TABLE images (
+    CREATE TABLE IF NOT EXISTS images (
         id TEXT PRIMARY KEY,
         filename TEXT NOT NULL,
         mime_type TEXT NOT NULL,
@@ -308,7 +310,7 @@ def init_db(force_reset: bool = False):
     """)
 
     cursor.execute("""
-    CREATE TABLE works (
+    CREATE TABLE IF NOT EXISTS works (
         id TEXT PRIMARY KEY,
         title TEXT NOT NULL,
         subtitle TEXT NOT NULL,
@@ -321,7 +323,7 @@ def init_db(force_reset: bool = False):
     """)
     
     cursor.execute("""
-    CREATE TABLE tags (
+    CREATE TABLE IF NOT EXISTS tags (
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL UNIQUE,
         color TEXT NOT NULL
@@ -329,7 +331,7 @@ def init_db(force_reset: bool = False):
     """)
     
     cursor.execute("""
-    CREATE TABLE work_tags (
+    CREATE TABLE IF NOT EXISTS work_tags (
         work_id TEXT NOT NULL,
         tag_id TEXT NOT NULL,
         PRIMARY KEY (work_id, tag_id),
@@ -339,7 +341,7 @@ def init_db(force_reset: bool = False):
     """)
 
     cursor.execute("""
-    CREATE TABLE contact_messages (
+    CREATE TABLE IF NOT EXISTS contact_messages (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         email TEXT NOT NULL,
