@@ -34,14 +34,15 @@ Ogni volta che fai modifiche locali sul tuo Mac e vuoi caricarle sul sito reale:
 
 Ogni volta che modifichi il backend (es. file in `/backend`), fai prima il `git push` del codice dal tuo Mac a GitHub, poi:
 
-1. Collegati via SSH alla VPS:
+1. Collegati alla VPS (via SSH o tramite Console Web di Aruba):
    ```bash
    ssh -6 root@2a00:6d40:72:101::606
    ```
-2. Spostati nella cartella del progetto, scarica le modifiche e riavvia il server:
+2. Scarica le modifiche, esegui l'inizializzazione/migrazione del database e riavvia il server:
    ```bash
    cd /var/www/the-archive
    git pull
+   venv/bin/python3 backend/database.py --init
    sudo systemctl restart portfolio-backend
    ```
 
@@ -68,7 +69,19 @@ Ogni volta che modifichi il backend (es. file in `/backend`), fai prima il `git 
   ```
 
 ### Gestione del Database (Sicurezza)
-* **Resettare il database** (Attenzione: cancella tutti gli articoli reali! Da usare solo in caso di emergenza o ripristino da zero):
+Il database non viene modificato automaticamente all'avvio. Utilizza questi comandi CLI per gestirlo in modo controllato:
+
+* **Inizializzare e Migrare il Database** (crea le tabelle se mancano, esegue le migrazioni di schema in sicurezza):
+  ```bash
+  cd /var/www/the-archive
+  venv/bin/python3 backend/database.py --init
+  ```
+* **Popolare con dati di esempio (Seed)** (aggiunge gli articoli di default solo se il database è vuoto):
+  ```bash
+  cd /var/www/the-archive
+  venv/bin/python3 backend/database.py --seed
+  ```
+* **Resettare completamente il database** (Attenzione: cancella permanentemente tutte le tabelle e tutti gli articoli reali!):
   ```bash
   cd /var/www/the-archive
   venv/bin/python3 backend/database.py --force-reset
