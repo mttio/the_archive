@@ -261,7 +261,7 @@ def init_db(force_reset: bool = False):
                     conn.commit()
         except Exception as e:
             print(f"Database check/migration error: {e}")
-            needs_init = True
+            raise e
         finally:
             conn.close()
 
