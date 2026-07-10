@@ -1,33 +1,17 @@
 ## Next things to modify:
 
-- [x] in the articles pages I want to remove the sidebar with tags and timeline. Let's make the article body take all the width while moving the tags and timeline to the top (the timeline is even already present on the top). This change must be reflected in the new/edit page as well
-- [x] I want to remove colors from the tags from all pages. I like the style they have in the homepage work cards. When creating/managing tags you shouldn't be able to select tag color anymore
-- [x] remove PUBLISHED tag in published posts section in admin page (it's trivial they are published since they are in that section)
-- [x] instead of having separate WORKS DATABASE and TAG MANAGER tabs in admin page you can simply put the tag manager as a new section below the other two.
-- [x] To move elements/blocks in the edit page you should simply be able to drag elements around (grabbing them from the grey lateral bar that already appears when you hover on them, so you can move them up or down the page) Instead of using arrows
-- [x] the floating element with the arrows and element selector in the edit page is behaving weirdly. It is not always displaying at the right height and is sometimes impossible to click or use due to its unreachable position
-- [x] By clicking on a published article in the admin page you are redirected to the final article page
-- [x] Date can be chosen by use of a calendar like feature. Default date is current day for new articles
-- [x] I changed my mind about the drag and drop in edit page. Let's use arrows as in the previous version. Add those to the new appearing menu to change the element type that works great now.
-- [x] articles in the admin page must be ordered by date, like in the home page
-- [x] the current EDIT TAGS functionality inside the new/edit page feels a little bit chuncky. Let's create maybe a cool dropdown menu where tags are better spaced.
-- [x] Tags must be ALLCAPS in every part of the application (in some menus they are not now)
-- [x] let's keep the possibility to edit the slug url identifier at any moment (Not only in the new page). Both in the edit and new page the top bar should feature a slot for inline-editing the slug url. (the current slug url section in the new page will be replaced by the new common one)
-- [x] the top bar in the new/edit page is featuring a weird white background that floats in the middle of the page. Let's fix it by making the white background take all the horizontal space up to the sides. (keep the buttons and stuff in the same position they are now)
-- [x] in the bottom right corner replace the "Designed with intention • Artist, Engineer, Athlete" with just "Designed with intention by Matteo Berga"
-- [x] the icons in the topbar should lead to the same website pages I added in the contact page
-- [x] change the title of the site on the top left with "The Archive by Matteo Berga" in which "by Matteo Berga" should be colored with a slightly lighter grey
-- [x] the top bar in new/edit page is still completely messed up, looking all of to the right
-- [x] add youtube among my notable links, both in the navbar and the contact page (with the little icon). My yt channel is at https://www.youtube.com/@matteoberga
-- [x] while h2 and h3 elements in edit page are ok in serif font, I'd like normal TEXT from articles to always be displayed as sans serif (like it' already being displayed in the final version).
-- [x] tags selector in the home page should feature them looking like normal, being rounded and smaller rather than squared
-- [x] let's change again the tags selector in the edit page: it should display all available tags in one or more lines, allowing you to select the ones you like
-- [x] remove borders or shadows from all images (especially remove the border from images that feature a subtitle in articles)
-
-
-
-
-
+- [x] when article hasn't got a cover image, there shouldn't be any image canvas in the article page
+- [x] remove ENTRY DETAILS line in article pages
+- [x] the dates are still not working fine: please keep both the date and the timestamp at which the posts are created. by default the posts should get the current date and timestamp at which the post is created
+- [x] article titles in work cards are too small, both in home page and in all articles
+- [x] add a SEE ALL link on the left next to the arrows to send the user to the all articles page
+- [x] all grey type, both in light and dark mode is either too light or too dark depending on the mode, thus worsening visibility
+- [x] move the SEE ALL ARTICLES right to the left of the arrows, centering it to the right
+- [x] in the all articles page the bottom title is slightly too big and goes off page
+- [x] when on mobile reduce the vertical space between the two footer lines
+- [x] even less space between footer lines
+- [x] remove the CATEGORIES: type in the filters selector
+- [x] the title ALL ARTICLES should be as big as the 02. simply it mustn't go off-page, like the homepage title
 
 
 

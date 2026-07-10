@@ -8,7 +8,7 @@
     "build": "./node_modules/.bin/tsc -b && ./node_modules/.bin/vite build",
     "lint": "./node_modules/.bin/oxlint",
     "preview": "./node_modules/.bin/vite preview",
-    "deploy": "npm run build && scp -P 2222 -r dist/* znlwohm-matteo@matteoberga.com:/web/htdocs/www.matteoberga.com/home/"
+    "deploy": "npm run build && scp -P 2222 -r dist/* znlwohm-matteo@ssh.matteoberga.com:/web/htdocs/www.matteoberga.com/home/"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.1",

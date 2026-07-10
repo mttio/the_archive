@@ -17,7 +17,7 @@ function App() {
         <Navbar />
 
         {/* Main Content Area */}
-        <main className="mx-auto flex w-full max-w-none flex-grow flex-col px-6 md:px-12">
+        <main className="mx-auto flex w-full max-w-none flex-grow flex-col px-4 md:px-8">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/articles" element={<Articles />} />

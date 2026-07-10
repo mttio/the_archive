@@ -1,4 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useWorks } from '../hooks/useWorks';
 import { WorkCard } from '../components/WorkCard';
 
@@ -29,7 +30,13 @@ export const Home: React.FC = () => {
   const [scrollLeft, setScrollLeft] = useState(0);
 
   const sortedItems = useMemo(() => {
-    return [...works].sort((a, b) => parseDateString(b.date) - parseDateString(a.date));
+    return [...works].sort((a, b) => {
+      const dateDiff = parseDateString(b.date) - parseDateString(a.date);
+      if (dateDiff !== 0) return dateDiff;
+      const aTime = a.created_at || '';
+      const bTime = b.created_at || '';
+      return bTime.localeCompare(aTime);
+    });
   }, [works]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -81,7 +88,7 @@ export const Home: React.FC = () => {
               onMouseLeave={handleMouseLeaveOrUp}
               onMouseUp={handleMouseLeaveOrUp}
               onMouseMove={handleMouseMove}
-              className="flex gap-4 overflow-x-auto select-none pb-4 cursor-grab active:cursor-grabbing [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              className="flex gap-4 overflow-x-auto select-none pb-4 cursor-grab active:cursor-grabbing [scrollbar-width:none] [&::-webkit-scrollbar]:hidden -mx-4 px-4 md:-mx-8 md:px-8"
             >
               {sortedItems.map((item) => (
                 <WorkCard key={item.id} item={item} variant="portrait" />
@@ -89,21 +96,29 @@ export const Home: React.FC = () => {
             </div>
 
             {/* Slider Navigation Buttons */}
-            <div className="flex justify-end space-x-3 pt-2">
-              <button
-                onClick={() => handleScroll('left')}
-                className="w-10 h-10 rounded-full border border-neutral-200 dark:border-neutral-900 hover:border-black dark:hover:border-white text-black dark:text-white flex items-center justify-center transition-colors duration-300 cursor-pointer"
-                aria-label="Scroll left"
+            <div className="flex justify-end items-center space-x-6 pt-2">
+              <Link
+                to="/articles"
+                className="text-[10px] font-light tracking-[0.2em] uppercase text-neutral-400 hover:text-black dark:text-neutral-500 dark:hover:text-white border-b border-neutral-200 dark:border-neutral-800 hover:border-black dark:hover:border-white pb-0.5 transition-all font-sans cursor-pointer"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-              </button>
-              <button
-                onClick={() => handleScroll('right')}
-                className="w-10 h-10 rounded-full border border-neutral-200 dark:border-neutral-900 hover:border-black dark:hover:border-white text-black dark:text-white flex items-center justify-center transition-colors duration-300 cursor-pointer"
-                aria-label="Scroll right"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-              </button>
+                See All Articles
+              </Link>
+              <div className="flex space-x-3">
+                <button
+                  onClick={() => handleScroll('left')}
+                  className="w-10 h-10 rounded-full border border-neutral-200 dark:border-neutral-900 hover:border-black dark:hover:border-white text-black dark:text-white flex items-center justify-center transition-colors duration-300 cursor-pointer"
+                  aria-label="Scroll left"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                </button>
+                <button
+                  onClick={() => handleScroll('right')}
+                  className="w-10 h-10 rounded-full border border-neutral-200 dark:border-neutral-900 hover:border-black dark:hover:border-white text-black dark:text-white flex items-center justify-center transition-colors duration-300 cursor-pointer"
+                  aria-label="Scroll right"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </button>
+              </div>
             </div>
           </div>
         ) : (

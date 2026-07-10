@@ -57,7 +57,7 @@ export const Navbar: React.FC = () => {
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-white/30 backdrop-blur-md mb-2 dark:bg-black/30 transition-colors duration-300">
-      <div className="w-full px-6 md:px-12">
+      <div className="w-full px-4 md:px-8">
         <div className="flex h-14 items-center justify-between">
           {/* Logo / Title */}
           <Link to="/" className="flex items-center space-x-2 group">
@@ -142,7 +142,7 @@ export const Navbar: React.FC = () => {
             </button>
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center rounded-none p-2 text-neutral-400 hover:text-neutral-900 dark:text-stone-500 dark:hover:text-stone-100 focus:outline-none"
+              className="inline-flex items-center justify-center rounded-none p-2 -mr-2 text-neutral-400 hover:text-neutral-900 dark:text-stone-500 dark:hover:text-stone-100 focus:outline-none"
               aria-expanded={isOpen}
             >
               {isOpen ? <X size={18} /> : <Menu size={18} />}
@@ -153,7 +153,7 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden bg-white dark:bg-black px-6 py-4 space-y-3 transition-colors duration-300">
+        <div className="md:hidden bg-white dark:bg-black px-4 py-4 space-y-3 transition-colors duration-300">
           {navLinks.map((link) => (
             <Link
               key={link.path}

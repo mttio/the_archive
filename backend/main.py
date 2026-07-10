@@ -152,6 +152,11 @@ def create_work(work: WorkCreate, authorized: bool = Depends(check_admin_passphr
         raise HTTPException(status_code=400, detail="A work item with this ID already exists.")
         
     try:
+        import datetime
+        post_date = work.date
+        if not post_date or post_date.strip() == "":
+            post_date = datetime.date.today().isoformat()
+
         cursor.execute("""
         INSERT INTO works (
             id, title, subtitle, content, date, imageUrl, draft
@@ -161,7 +166,7 @@ def create_work(work: WorkCreate, authorized: bool = Depends(check_admin_passphr
             work.title,
             work.subtitle,
             work.content,
-            work.date,
+            post_date,
             work.imageUrl,
             int(work.draft)
         ))
@@ -195,6 +200,11 @@ def update_work(work_id: str, work: WorkUpdate, authorized: bool = Depends(check
         
         new_id = work.id if work.id else work_id
         
+        import datetime
+        post_date = work.date
+        if not post_date or post_date.strip() == "":
+            post_date = datetime.date.today().isoformat()
+
         # Update the works record
         cursor.execute("""
         UPDATE works SET 
@@ -211,7 +221,7 @@ def update_work(work_id: str, work: WorkUpdate, authorized: bool = Depends(check
             work.title,
             work.subtitle,
             work.content,
-            work.date,
+            post_date,
             work.imageUrl,
             int(work.draft),
             work_id

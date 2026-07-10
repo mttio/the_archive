@@ -87,7 +87,7 @@ export const Contact: React.FC = () => {
   };
 
   return (
-    <div className="py-8 pb-2 space-y-12 w-full text-left">
+    <div className="py-8 pb-2 space-y-12 w-full text-left max-w-5xl mx-auto">
       <section className="space-y-4 max-w-2xl">
         <h1 className="font-sans font-light text-3xl sm:text-4xl lg:text-5xl tracking-widest text-black dark:text-white leading-tight uppercase">
           Let's have a good Cappuccino!

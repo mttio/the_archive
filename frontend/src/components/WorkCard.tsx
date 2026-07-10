@@ -5,7 +5,7 @@ import { getResponsiveImageProps } from '../utils/responsiveImage';
 
 interface WorkCardProps {
   item: WorkItem;
-  variant?: 'featured' | 'medium' | 'small' | 'sidebar' | 'portrait';
+  variant?: 'featured' | 'medium' | 'small' | 'sidebar' | 'portrait' | 'portrait-fluid';
 }
 
 const formatDateForDisplay = (dateStr: string): string => {
@@ -146,16 +146,20 @@ export const WorkCard: React.FC<WorkCardProps> = ({ item, variant = 'medium' }) 
     );
   }
 
-  if (variant === 'portrait') {
+  if (variant === 'portrait' || variant === 'portrait-fluid') {
+    const isFluid = variant === 'portrait-fluid';
     return (
-      <div className="flex-shrink-0 w-[240px] sm:w-[280px] md:w-[320px] select-none text-left">
+      <div className={`${isFluid ? 'w-full py-4' : 'flex-shrink-0 w-[300px] sm:w-[260px] md:w-[260px]'} select-none text-left`}>
         <Link 
           to={`/work/${item.id}`}
           className="block aspect-[3/4] w-full overflow-hidden bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-colors duration-300 mb-3"
         >
           {hasImage ? (
             <img
-              src={item.imageUrl}
+              {...(isFluid 
+                ? getResponsiveImageProps(item.imageUrl, "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 350px") 
+                : { src: item.imageUrl }
+              )}
               alt={item.title}
               loading="lazy"
               className="h-full w-full object-cover hover:scale-101 transition-transform duration-500 ease-out"
@@ -164,7 +168,7 @@ export const WorkCard: React.FC<WorkCardProps> = ({ item, variant = 'medium' }) 
         </Link>
         <div className="space-y-1">
           <Link to={`/work/${item.id}`} className="group block">
-            <h4 className="font-sans font-light text-xs sm:text-sm text-black dark:text-white uppercase leading-tight tracking-widest group-hover:text-neutral-500 dark:group-hover:text-neutral-400 transition-colors">
+            <h4 className="font-sans font-light text-sm sm:text-base md:text-lg text-black dark:text-white uppercase leading-tight tracking-widest group-hover:text-neutral-500 dark:group-hover:text-neutral-400 transition-colors">
               {item.title}
             </h4>
           </Link>

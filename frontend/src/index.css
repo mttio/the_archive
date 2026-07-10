@@ -88,3 +88,40 @@
     @apply border-l border-neutral-200 dark:border-neutral-800;
   }
 }
+
+/* Improving contrast for grey typography (light & dark modes) */
+.text-neutral-300 {
+  color: #8a8a8a !important;
+}
+.text-neutral-400 {
+  color: #6b6b6b !important; /* Darker grey for better light mode contrast */
+}
+.text-neutral-500 {
+  color: #4b4b4b !important;
+}
+.text-stone-400 {
+  color: #706a65 !important;
+}
+.text-stone-500 {
+  color: #524e4a !important;
+}
+
+html.dark .dark\:text-neutral-550 {
+  color: #b3b3b3 !important;
+}
+html.dark .dark\:text-neutral-500 {
+  color: #a3a3a3 !important; /* Lighter grey for better dark mode contrast */
+}
+html.dark .dark\:text-stone-500 {
+  color: #a8a29e !important;
+}
+html.dark .dark\:text-neutral-400 {
+  color: #d4d4d4 !important; /* Lighter grey */
+}
+html.dark .dark\:text-stone-400 {
+  color: #d6d3d1 !important;
+}
+html.dark .dark\:text-neutral-300 {
+  color: #e5e5e5 !important;
+}
+

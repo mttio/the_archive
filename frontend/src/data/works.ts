@@ -13,6 +13,7 @@ export interface WorkItem {
   date: string;
   imageUrl?: string;
   draft?: boolean;
+  created_at?: string;
 }
 
 const mockTags: Record<string, TagItem> = {

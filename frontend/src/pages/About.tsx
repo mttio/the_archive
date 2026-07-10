@@ -2,7 +2,7 @@ import React from 'react';
 
 export const About: React.FC = () => {
   return (
-    <div className="py-8 pb-2 space-y-12 w-full text-left">
+    <div className="py-8 pb-2 space-y-12 w-full text-left max-w-5xl mx-auto">
       {/* Intro section */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-12 items-start">
         <div className="md:col-span-2 space-y-6">

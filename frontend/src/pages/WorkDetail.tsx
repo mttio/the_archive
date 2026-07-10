@@ -94,9 +94,6 @@ export const WorkDetail: React.FC = () => {
           <ArrowLeft size={12} className="transition-transform group-hover:-translate-x-1" />
           <span>Back to Articles</span>
         </button>
-        <span className="text-[9px] font-light tracking-widest text-neutral-300 dark:text-neutral-700 uppercase font-sans">
-          Entry Details
-        </span>
       </div>
 
       {/* Intro Metadata */}
@@ -123,15 +120,15 @@ export const WorkDetail: React.FC = () => {
       </div>
 
       {/* Main Showcase Image */}
-      <div className="relative w-full aspect-video md:aspect-[21/9] overflow-hidden bg-neutral-100 dark:bg-neutral-900">
-        {item.imageUrl && item.imageUrl.trim() !== '' ? (
+      {item.imageUrl && item.imageUrl.trim() !== '' && (
+        <div className="relative w-full aspect-video md:aspect-[21/9] overflow-hidden bg-neutral-100 dark:bg-neutral-900">
           <img
             {...getResponsiveImageProps(item.imageUrl, "(max-width: 768px) 100vw, 1200px")}
             alt={item.title}
             className="w-full h-full object-cover"
           />
-        ) : null}
-      </div>
+        </div>
+      )}
 
       {/* Content body layout */}
       <div className="prose prose-neutral dark:prose-invert max-w-none pt-4 text-left font-sans font-light leading-relaxed text-neutral-800 dark:text-neutral-250">

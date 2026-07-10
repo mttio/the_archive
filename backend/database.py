@@ -251,7 +251,16 @@ def init_db(force_reset: bool = False):
             cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='works'")
             if not cursor.fetchone():
                 needs_init = True
-        except Exception:
+            else:
+                # Table exists, check if created_at column is present
+                cursor.execute("PRAGMA table_info(works)")
+                cols = [row["name"] for row in cursor.fetchall()]
+                if "created_at" not in cols:
+                    print("Migration: Adding 'created_at' column to 'works' table...")
+                    cursor.execute("ALTER TABLE works ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+                    conn.commit()
+        except Exception as e:
+            print(f"Database check/migration error: {e}")
             needs_init = True
         finally:
             conn.close()
@@ -305,7 +314,8 @@ def init_db(force_reset: bool = False):
         content TEXT NOT NULL,
         date TEXT NOT NULL,
         imageUrl TEXT,
-        draft INTEGER DEFAULT 0
+        draft INTEGER DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
     """)
     
