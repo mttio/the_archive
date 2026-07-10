@@ -10,7 +10,7 @@ import uuid
 import io
 from PIL import Image
 
-from database import init_db, get_db_connection, create_contact_message, get_contact_messages, delete_contact_message
+from database import get_db_connection, create_contact_message, get_contact_messages, delete_contact_message
 
 app = FastAPI(title="Matteo Berga Portfolio API")
 
@@ -31,10 +31,24 @@ app.add_middleware(
 # Admin Secret Passphrase Configuration
 ADMIN_PASSPHRASE = os.getenv("ADMIN_PASSPHRASE", "admin123")
 
-# Initialize database on startup
+# Verify database is initialized and healthy on startup
 @app.on_event("startup")
 def startup_event():
-    init_db()
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        # Verify works table exists and can be queried
+        cursor.execute("SELECT COUNT(*) FROM works")
+        conn.close()
+    except Exception as e:
+        print("==========================================================")
+        print("CRITICAL DATABASE ERROR: Database is not initialized or tables are missing!")
+        print("Please initialize the database explicitly by running:")
+        print("  python3 database.py --init")
+        print("And seed it if necessary using:")
+        print("  python3 database.py --seed")
+        print("==========================================================")
+        raise RuntimeError("Database health check failed. Startup aborted.") from e
 
 # Pydantic Schemas
 class TagBase(BaseModel):

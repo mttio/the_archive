@@ -236,68 +236,10 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
-def init_db(force_reset: bool = False):
-    uploads_dir = os.path.join(os.path.dirname(__file__), "uploads")
-    os.makedirs(uploads_dir, exist_ok=True)
-    
-    db_exists = os.path.exists(DB_PATH)
-    needs_init = not db_exists or force_reset
-    
-    if not needs_init:
-        # Check if works table already exists
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        try:
-            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='works'")
-            if not cursor.fetchone():
-                needs_init = True
-            else:
-                # Table exists, check if created_at column is present
-                cursor.execute("PRAGMA table_info(works)")
-                cols = [row["name"] for row in cursor.fetchall()]
-                if "created_at" not in cols:
-                    print("Migration: Adding 'created_at' column to 'works' table...")
-                    cursor.execute("ALTER TABLE works ADD COLUMN created_at TIMESTAMP")
-                    cursor.execute("UPDATE works SET created_at = CURRENT_TIMESTAMP WHERE created_at IS NULL")
-                    conn.commit()
-        except Exception as e:
-            print(f"Database check/migration error: {e}")
-            raise e
-        finally:
-            conn.close()
-
-    if not needs_init:
-        print("Database already initialized. Skipping reset.")
-        return
-
-    print("Initializing database...")
-    
-    # Clean up uploads directory on force reset or fresh init
-    for f in os.listdir(uploads_dir):
-        file_path = os.path.join(uploads_dir, f)
-        try:
-            if os.path.isfile(file_path):
-                os.unlink(file_path)
-        except Exception as e:
-            print(f"Error deleting file {file_path}: {e}")
-
-    conn = get_db_connection()
+def create_tables(conn):
     cursor = conn.cursor()
-    
-    # Enable foreign keys
     cursor.execute("PRAGMA foreign_keys = ON")
     
-    # Reset database by dropping old tables ONLY if force_reset is explicitly True
-    if force_reset:
-        print("Force resetting database: dropping old tables...")
-        cursor.execute("DROP TABLE IF EXISTS work_tags")
-        cursor.execute("DROP TABLE IF EXISTS tags")
-        cursor.execute("DROP TABLE IF EXISTS works")
-        cursor.execute("DROP TABLE IF EXISTS contact_messages")
-        cursor.execute("DROP TABLE IF EXISTS images")
-        conn.commit()
-    
-    # Create tables safely (if they do not exist)
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS images (
         id TEXT PRIMARY KEY,
@@ -351,9 +293,33 @@ def init_db(force_reset: bool = False):
     )
     """)
     conn.commit()
-    
-    print("Database tables created successfully.")
-    
+    print("Database tables verified/created successfully.")
+
+def run_migrations(conn):
+    cursor = conn.cursor()
+    try:
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='works'")
+        if cursor.fetchone():
+            cursor.execute("PRAGMA table_info(works)")
+            cols = [row["name"] for row in cursor.fetchall()]
+            if cols and "created_at" not in cols:
+                print("Migration: Adding 'created_at' column to 'works' table...")
+                cursor.execute("ALTER TABLE works ADD COLUMN created_at TIMESTAMP")
+                cursor.execute("UPDATE works SET created_at = CURRENT_TIMESTAMP WHERE created_at IS NULL")
+                conn.commit()
+                print("Migration completed successfully.")
+    except Exception as e:
+        print(f"Migration error: {e}")
+        raise e
+
+def seed_data(conn):
+    cursor = conn.cursor()
+    cursor.execute("SELECT COUNT(*) FROM works")
+    if cursor.fetchone()[0] > 0:
+        print("Database already contains data. Skipping seeding.")
+        return
+        
+    print("Seeding initial data...")
     # Seed tags
     for tag in INITIAL_TAGS:
         cursor.execute("INSERT OR IGNORE INTO tags (id, name, color) VALUES (?, ?, ?)", 
@@ -361,7 +327,6 @@ def init_db(force_reset: bool = False):
     
     # Seed works
     for item in INITIAL_WORKS:
-        # Merge description into subtitle if description exists
         desc = item.get("description", "")
         sub = item["subtitle"]
         full_sub = f"{sub} {desc}".strip() if desc else sub
@@ -387,8 +352,51 @@ def init_db(force_reset: bool = False):
                            (item["id"], tag_id))
             
     conn.commit()
-    conn.close()
     print("Database seeded successfully.")
+
+def reset_db():
+    uploads_dir = os.path.join(os.path.dirname(__file__), "uploads")
+    os.makedirs(uploads_dir, exist_ok=True)
+    
+    for f in os.listdir(uploads_dir):
+        file_path = os.path.join(uploads_dir, f)
+        try:
+            if os.path.isfile(file_path):
+                os.unlink(file_path)
+        except Exception as e:
+            print(f"Error deleting file {file_path}: {e}")
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    print("Dropping old tables...")
+    cursor.execute("PRAGMA foreign_keys = ON")
+    cursor.execute("DROP TABLE IF EXISTS work_tags")
+    cursor.execute("DROP TABLE IF EXISTS tags")
+    cursor.execute("DROP TABLE IF EXISTS works")
+    cursor.execute("DROP TABLE IF EXISTS contact_messages")
+    cursor.execute("DROP TABLE IF EXISTS images")
+    conn.commit()
+    
+    create_tables(conn)
+    seed_data(conn)
+    conn.close()
+    print("Database force-reset completed successfully.")
+
+def init_db(force_reset: bool = False):
+    uploads_dir = os.path.join(os.path.dirname(__file__), "uploads")
+    os.makedirs(uploads_dir, exist_ok=True)
+    
+    if force_reset:
+        reset_db()
+        return
+        
+    conn = get_db_connection()
+    try:
+        create_tables(conn)
+        run_migrations(conn)
+    finally:
+        conn.close()
 
 def create_contact_message(name: str, email: str, subject: str, message: str) -> int:
     conn = get_db_connection()
@@ -419,8 +427,31 @@ def delete_contact_message(message_id: int):
 
 if __name__ == "__main__":
     import sys
-    # Add safety check to prevent accidental database resets
-    if "--force-reset" in sys.argv:
+    
+    def print_usage():
+        print("Usage:")
+        print("  python3 database.py --init          Initialize database tables safely (if they do not exist) and run migrations.")
+        print("  python3 database.py --seed          Seed database with initial mock data (only if empty).")
+        print("  python3 database.py --force-reset   DANGEROUS: Drops all tables, recreates, and seeds them.")
+        print("")
+
+    if len(sys.argv) < 2:
+        print_usage()
+        sys.exit(1)
+        
+    arg = sys.argv[1]
+    if arg == "--init":
+        print("Initializing database tables and running migrations...")
+        init_db(force_reset=False)
+        print("Database initialization completed successfully.")
+    elif arg == "--seed":
+        print("Seeding database...")
+        conn = get_db_connection()
+        try:
+            seed_data(conn)
+        finally:
+            conn.close()
+    elif arg == "--force-reset":
         try:
             confirm = input("WARNING: This will completely reset the database and delete all data! Type 'YES' to confirm: ")
             if confirm == "YES":
@@ -431,5 +462,6 @@ if __name__ == "__main__":
         except KeyboardInterrupt:
             print("\nReset cancelled.")
     else:
-        print("Usage: python3 database.py --force-reset")
-        print("For security reasons, running this file directly requires the '--force-reset' argument and confirmation.")
+        print(f"Unknown argument: {arg}")
+        print_usage()
+        sys.exit(1)
